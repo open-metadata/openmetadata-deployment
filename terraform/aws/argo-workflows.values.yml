@@ -1,0 +1,45 @@
+controller:
+	serviceAccount:
+		create: true
+		name: argo-workflows-controller-sa
+# For Connecting ArgoWorkflows to PSQL Database for Archiving Workflows
+# Defaults to persistence disabled
+# Create Kubernetes Secret with Name argo-postgres-db-secret
+# with Keys as db_username and db_password
+# persistence:
+#    archive: true
+#    postgresql:
+#      host: ${db_instance_endpoint}
+#      database: ${db_instance_name}
+#      tableName: argo_workflows
+#     userNameSecret:
+#        name: argo-postgres-db-secret
+#        key: db_username
+#      passwordSecret:
+#        name: argo-postgres-db-secret
+#        key: db_password
+#      ssl: true
+#      sslMode: require
+server:
+	serviceAccount:
+		create: true
+		name: argo-workflows-server-sa
+	extraArgs: 
+	- "--auth-mode=server" 
+	- "--request-timeout=5m"
+# For Connecting ArgoWorkflows to Archive Logs
+# As an example we chose s3 to archive logs for below snippet
+# Defaults to false for archive logs storage
+# This is required else the Ingestion Runs will be marked as Failed
+artifactRepository:
+  archiveLogs: true
+  s3:
+    insecure: true
+    endpoint: argo-artifacts.minio:9000
+    bucket: argo-workflows
+		accessKeySecret:
+      name: minio-argo-creds
+      key: accesskey
+    secretKeySecret:
+      name: minio-argo-creds
+      key: secretkey
