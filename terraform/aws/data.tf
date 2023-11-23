@@ -15,10 +15,10 @@ data "aws_subnets" "private" {
     Tier = "Private"
   }
 }
-locals {
-  docker_password_file_path = "/Users/dhruvinmaniar/Desktop/dhruvinmaniar123/openmetadata-deployment/pwd.txt"  # Replace with the actual path to your Docker password file
-}
+# locals {
+#   docker_password_file_path = "/Users/dhruvinmaniar/Desktop/dhruvinmaniar123/openmetadata-deployment/pwd.txt"  # Replace with the actual path to your Docker password file
+# }
 
-data "local_file" "docker_password" {
-  filename = local.docker_password_file_path
-}
+# data "local_file" "docker_password" {
+#   filename = local.docker_password_file_path
+# }

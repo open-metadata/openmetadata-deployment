@@ -6,16 +6,17 @@ resource "kubernetes_service_account_v1" "om_argo_sa" {
   metadata {
     name = "om-argo-wf-sa"
 
-    namespace = kubernetes_namespace.argocd.id
+    namespace = kubernetes_namespace.argowf.id
 
   }
 
-  depends_on = [kubernetes_namespace.argocd]
+  depends_on = [kubernetes_namespace.argowf]
 }
 
 resource "kubernetes_role" "om-argo-role" {
   metadata {
-    name = "om-argo-role"
+    name      = "om-argo-role"
+    namespace = kubernetes_namespace.argowf.id
   }
 
   rule {
@@ -45,7 +46,8 @@ resource "kubernetes_role" "om-argo-role" {
 
 resource "kubernetes_role_binding" "om-argo-role-binding" {
   metadata {
-    name = "om-argo-role-binding"
+    name      = "om-argo-role-binding"
+    namespace = kubernetes_namespace.argowf.id
   }
 
   role_ref {
@@ -57,13 +59,13 @@ resource "kubernetes_role_binding" "om-argo-role-binding" {
   subject {
     kind      = "ServiceAccount"
     name      = "om-argo-wf-sa"
-    namespace = kubernetes_namespace.argocd.id
+    namespace = kubernetes_namespace.argowf.id
   }
 }
 resource "kubernetes_secret" "om_role_token" {
   metadata {
     name      = "om-argo-wf-sa.service-account-token"
-    namespace = kubernetes_namespace.argocd.id
+    namespace = kubernetes_namespace.argowf.id
     annotations = {
       "kubernetes.io/service-account.name" = "om-argo-wf-sa"
     }
@@ -73,7 +75,7 @@ resource "kubernetes_secret" "om_role_token" {
 resource "helm_release" "openmetadata_dependencies" {
   name      = "openmetadata-dependencies"
   chart     = "open-metadata/openmetadata-dependencies"
-  namespace = kubernetes_namespace.argocd.id
+  namespace = kubernetes_namespace.argowf.id
 
   values = [
     file("openmetadata_deps.values.yml"),
