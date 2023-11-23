@@ -1,3 +1,4 @@
+# mysql secrets
 resource "kubernetes_secret" "mysql_secrets" {
   metadata {
     name      = "mysql-secrets"
@@ -8,6 +9,7 @@ resource "kubernetes_secret" "mysql_secrets" {
     openmetadata-mysql-password = "openmetadata_password"
   }
 }
+# ecr registry creds
 resource "kubernetes_secret" "ecr_registry_creds" {
   metadata {
     name      = "ecr-registry-creds"
@@ -29,6 +31,8 @@ resource "kubernetes_secret" "ecr_registry_creds" {
 
   type = "kubernetes.io/dockerconfigjson"
 }
+
+# openmetadata helm release
 resource "helm_release" "openmetadata" {
   name       = "openmetadata"
   repository = "https://helm.open-metadata.org"

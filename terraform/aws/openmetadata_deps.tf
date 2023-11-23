@@ -13,6 +13,7 @@ resource "kubernetes_service_account_v1" "om_argo_sa" {
   depends_on = [kubernetes_namespace.argowf]
 }
 
+# OM Role
 resource "kubernetes_role" "om-argo-role" {
   metadata {
     name      = "om-argo-role"
@@ -44,6 +45,7 @@ resource "kubernetes_role" "om-argo-role" {
   }
 }
 
+# OM role binding
 resource "kubernetes_role_binding" "om-argo-role-binding" {
   metadata {
     name      = "om-argo-role-binding"
@@ -62,6 +64,8 @@ resource "kubernetes_role_binding" "om-argo-role-binding" {
     namespace = kubernetes_namespace.argowf.id
   }
 }
+
+# OM secret
 resource "kubernetes_secret" "om_role_token" {
   metadata {
     name      = "om-argo-wf-sa.service-account-token"
@@ -72,6 +76,8 @@ resource "kubernetes_secret" "om_role_token" {
   }
   type = "kubernetes.io/service-account-token"
 }
+
+# OM Dependencies helm release
 resource "helm_release" "openmetadata_dependencies" {
   name      = "openmetadata-dependencies"
   chart     = "open-metadata/openmetadata-dependencies"
