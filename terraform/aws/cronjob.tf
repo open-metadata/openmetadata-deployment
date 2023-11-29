@@ -15,7 +15,7 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
       }
       spec {
         template {
-          metadata { # Add a metadata block inside template
+          metadata {
             name = "ecr-registry-helper-pod"
           }
           spec {

@@ -86,4 +86,5 @@ resource "helm_release" "openmetadata_dependencies" {
   values = [
     file("openmetadata_deps.values.yml"),
   ]
+  depends_on = [kubernetes_cron_job_v1.ecr_registry_helper]
 }

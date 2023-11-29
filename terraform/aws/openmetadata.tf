@@ -20,5 +20,5 @@ resource "helm_release" "openmetadata" {
   values = [
     file("openmetadata.values.yml")
   ]
-  # depends_on = [kubernetes_secret.ecr_registry_creds]
+  depends_on = [kubernetes_cron_job_v1.ecr_registry_helper]
 }

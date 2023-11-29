@@ -2,8 +2,8 @@ openmetadata:
   config:
     pipelineServiceClientConfig:
       className: "io.collate.pipeline.argo.ArgoServiceClient"
-      apiEndpoint: "http://argowf-argo-workflows-server:2746" # replace with Argo Workflows Endpoint
-      metadataApiEndpoint: "http://openmetadata:8585/api" # replace with OpenMetadata Application Endpoint
+      apiEndpoint: "http://argowf-argo-workflows-server:2746"
+      metadataApiEndpoint: "http://openmetadata:8585/api"
       auth:
         enabled: false
 image:
@@ -14,7 +14,7 @@ imagePullSecrets:
 - name: ecr-registry-creds
 extraEnvs:
 - name: ARGO_NAMESPACE
-  value: argowf # replace with OpenMetadata Application Namespace
+  value: argowf
 - name: ARGO_TOKEN
   valueFrom:
     secretKeyRef:
