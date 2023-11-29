@@ -21,10 +21,3 @@ resource "kubernetes_config_map" "ecr_registry_helper_k8s_config_map" {
     DOCKER_SECRET_NAME = "ecr-registry-creds"
   }
 }
-
-resource "kubernetes_service_account" "ecr_registry_helper_k8s_service_account" {
-  metadata {
-    name      = "ecr-auth-sa"
-    namespace = kubernetes_namespace.argowf.id
-  }
-}

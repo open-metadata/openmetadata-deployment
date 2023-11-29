@@ -4,10 +4,7 @@
 
 locals {
   argo = {
-    # iam_role_name  = "${var.name}-argo-secrets"
     namespace = "argowf"
-    # eso_sa_name    = "argowf-eso"
-    # manifests_repo = "https://github.com/open-metadata/k8s-manifests.git"
   }
 }
 

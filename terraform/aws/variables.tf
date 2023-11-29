@@ -16,8 +16,10 @@ variable "vpc_id" {
 variable "ACCESS_KEY" {
   type        = string
   description = "Provide the Access Key"
+  default = "AKIARXAQXIPUCIGAI4FD"
 }
 variable "SECRET_KEY" {
   type        = string
   description = "Provide the Secret Key"
+  default = "g7q764dq7yIwjcrM8PJa/mndQqVyeHK9Jdwek78l"
 }

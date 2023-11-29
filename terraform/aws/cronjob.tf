@@ -5,7 +5,7 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
   }
 
   spec {
-    schedule                      = "*/1 * * * *"
+    schedule                      = "* */10 * * *"
     successful_jobs_history_limit = 2
     suspend                       = false
 
@@ -19,10 +19,10 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
             name = "ecr-registry-helper-pod"
           }
           spec {
-            service_account_name = kubernetes_service_account.ecr_registry_helper_k8s_service_account.metadata[0].name
+            service_account_name = kubernetes_service_account_v1.om_argo_cron_sa.metadata[0].name
             container {
               name  = "ecr-registry-helper"
-              image = "hnrchrdl/aws-kubectl"
+              image = "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
               env_from {
                 secret_ref {
                   name = kubernetes_secret.ecr_registry_helper_k8s_secret.metadata[0].name

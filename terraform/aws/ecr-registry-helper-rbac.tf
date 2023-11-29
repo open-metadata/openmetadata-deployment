@@ -5,7 +5,6 @@ resource "kubernetes_service_account_v1" "om_argo_cron_sa" {
   metadata {
     name      = "om-argo-cron-sa"
     namespace = kubernetes_namespace.argowf.id
-
   }
   depends_on = [kubernetes_namespace.argowf]
 }
@@ -20,7 +19,6 @@ resource "kubernetes_role" "cron-role" {
     verbs          = ["create", "delete"]
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = ["ecr-registry-creds"]
   }
 
 }
@@ -39,7 +37,7 @@ resource "kubernetes_role_binding" "cron_role_binding" {
 
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account.ecr_registry_helper_k8s_service_account.metadata[0].name
+    name      = kubernetes_service_account_v1.om_argo_cron_sa.metadata[0].name
     namespace = kubernetes_namespace.argowf.id
   }
 }
