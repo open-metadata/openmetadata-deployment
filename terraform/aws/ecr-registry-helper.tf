@@ -1,47 +1,24 @@
-resource "aws_iam_role" "ecr_registry_helper_role" {
-  name = "ecr-registry-helper-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal = {
-          Service = "ecr.amazonaws.com",
-        },
-      },
-    ],
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "ecr_registry_helper_role_policy" {
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryFullAccess"
-  role       = aws_iam_role.ecr_registry_helper_role.name
-}
-
-# resource "aws_ecr" "ecr_registry" {
-#   name = "my-ecr-repository"
-# }
-
 resource "kubernetes_secret" "ecr_registry_helper_k8s_secret" {
   metadata {
     name      = "ecr-registry-helper-secrets"
     namespace = kubernetes_namespace.argowf.id
   }
-
-  data = {}
+  data = {
+    AWS_SECRET_ACCESS_KEY = var.SECRET_KEY
+    AWS_ACCESS_KEY_ID     = var.ACCESS_KEY
+    AWS_ACCOUNT           = "118146679784"
+  }
 }
 
 resource "kubernetes_config_map" "ecr_registry_helper_k8s_config_map" {
   metadata {
     name      = "ecr-registry-helper-cm"
-    namespace = "default"
+    namespace = kubernetes_namespace.argowf.id
   }
 
   data = {
-    AWS_REGION         = "eu-west-1" # Replace with your ECR region
-    DOCKER_SECRET_NAME = "regcred"   # Replace with your desired ECR token secret name
+    AWS_REGION         = "eu-west-1"
+    DOCKER_SECRET_NAME = "ecr-registry-creds"
   }
 }
 

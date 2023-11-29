@@ -1,11 +1,11 @@
-resource "kubernetes_cron_job" "ecr_registry_helper" {
+resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
   metadata {
     name      = "ecr-registry-helper"
     namespace = kubernetes_namespace.argowf.id
   }
 
   spec {
-    schedule                      = "0 */10 * * *"
+    schedule                      = "*/1 * * * *"
     successful_jobs_history_limit = 2
     suspend                       = false
 
@@ -19,18 +19,18 @@ resource "kubernetes_cron_job" "ecr_registry_helper" {
             name = "ecr-registry-helper-pod"
           }
           spec {
-            service_account_name = kubernetes_service_account.ecr_registry_helper_k8s_service_account.id
+            service_account_name = kubernetes_service_account.ecr_registry_helper_k8s_service_account.metadata[0].name
             container {
               name  = "ecr-registry-helper"
-              image = "omarxs/awskctl:v1.0"
+              image = "hnrchrdl/aws-kubectl"
               env_from {
                 secret_ref {
-                  name = kubernetes_secret.ecr_registry_helper_k8s_secret.id
+                  name = kubernetes_secret.ecr_registry_helper_k8s_secret.metadata[0].name
                 }
               }
               env_from {
                 config_map_ref {
-                  name = kubernetes_config_map.ecr_registry_helper_k8s_config_map.id
+                  name = kubernetes_config_map.ecr_registry_helper_k8s_config_map.metadata[0].name
                 }
               }
               env {
@@ -42,12 +42,12 @@ resource "kubernetes_cron_job" "ecr_registry_helper" {
                 value = kubernetes_namespace.argowf.id
               }
               command = ["/bin/bash", "-c", <<-EOF
-                ECR_TOKEN="$(aws ecr get-login-password --region eu-west-1)"
-                kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME
-                kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=https://118146679784.dkr.ecr.eu-west-1.amazonaws.com --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME
-                echo "Secret was successfully updated at $(date)"
-              EOF
-              ]
+                 ECR_TOKEN="$(aws ecr get-login-password --region eu-west-1)"
+                 kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME
+                 kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=https://118146679784.dkr.ecr.eu-west-1.amazonaws.com --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME
+                 echo "Secret was successfully updated at $(date)"
+               EOF
+               ]
             }
 
             restart_policy = "Never"

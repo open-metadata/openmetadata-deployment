@@ -1,15 +1,12 @@
 ##
 ## grants the CronJob permission to delete and create secrets in the desired namespace.
 ##
-
 resource "kubernetes_service_account_v1" "om_argo_cron_sa" {
   metadata {
-    name = "om-argo-cron-sa"
-
+    name      = "om-argo-cron-sa"
     namespace = kubernetes_namespace.argowf.id
 
   }
-
   depends_on = [kubernetes_namespace.argowf]
 }
 
@@ -23,7 +20,7 @@ resource "kubernetes_role" "cron-role" {
     verbs          = ["create", "delete"]
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = ["regcred"]
+    resource_names = ["ecr-registry-creds"]
   }
 
 }

@@ -9,28 +9,28 @@ resource "kubernetes_secret" "mysql_secrets" {
     openmetadata-mysql-password = "openmetadata_password"
   }
 }
-# ecr registry creds
-resource "kubernetes_secret" "ecr_registry_creds" {
-  metadata {
-    name      = "ecr-registry-creds"
-    namespace = kubernetes_namespace.argowf.id
-  }
+# # ecr registry creds
+# resource "kubernetes_secret" "ecr_registry_creds" {
+#   metadata {
+#     name      = "ecr-registry-creds"
+#     namespace = kubernetes_namespace.argowf.id
+#   }
 
-  data = {
-    ".dockerconfigjson" = jsonencode(
-      {
-        auths = {
-          "118146679784.dkr.ecr.eu-west-1.amazonaws.com" = {
-            "username" = "AWS"
-            "password" = "${var.ecr_auth_token}"
-          }
-        }
-      }
-    )
-  }
+#   data = {
+#     ".dockerconfigjson" = jsonencode(
+#       {
+#         auths = {
+#           "118146679784.dkr.ecr.eu-west-1.amazonaws.com" = {
+#             "username" = "AWS"
+#             "password" = "${var.ecr_auth_token}"
+#           }
+#         }
+#       }
+#     )
+#   }
 
-  type = "kubernetes.io/dockerconfigjson"
-}
+#   type = "kubernetes.io/dockerconfigjson"
+# }
 
 # openmetadata helm release
 resource "helm_release" "openmetadata" {
@@ -42,5 +42,5 @@ resource "helm_release" "openmetadata" {
   values = [
     file("openmetadata.values.yml")
   ]
-  depends_on = [kubernetes_secret.ecr_registry_creds]
+  # depends_on = [kubernetes_secret.ecr_registry_creds]
 }
