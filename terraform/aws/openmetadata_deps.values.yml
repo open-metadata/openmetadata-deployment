@@ -1,0 +1,2 @@
+airflow:
+  enabled: false

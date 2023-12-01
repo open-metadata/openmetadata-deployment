@@ -1,0 +1,11 @@
+controller:
+  serviceAccount:
+    create: true
+    name: argo-workflows-controller-sa
+server:
+  serviceAccount:
+    create: true
+    name: argo-workflows-server-sa
+  extraArgs: 
+    - "--auth-mode=server" 
+    - "--request-timeout=5m"
