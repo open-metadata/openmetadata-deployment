@@ -5,7 +5,8 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
   }
 
   spec {
-    schedule                      = "* */10 * * *"
+    schedule                      = "*/1 * * * *"
+    starting_deadline_seconds     = 10
     successful_jobs_history_limit = 2
     suspend                       = false
 
@@ -47,7 +48,7 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
                  kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=https://118146679784.dkr.ecr.eu-west-1.amazonaws.com --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME
                  echo "Secret was successfully updated at $(date)"
                EOF
-               ]
+              ]
             }
 
             restart_policy = "Never"

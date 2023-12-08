@@ -1,0 +1,28 @@
+openmetadata:
+  config:
+    pipelineServiceClientConfig:
+      className: ${className}
+      apiEndpoint: ${apiEndpoint}
+      metadataApiEndpoint: ${metadataApiEndpoint}
+      auth:
+        enabled: false
+image:
+  repository: ${imageRepository}
+  tag: ${imageTag}
+  pullPolicy: ${imagePullPolicy}
+imagePullSecrets:
+- name: ${imagePullSecretName}
+extraEnvs:
+- name: ARGO_NAMESPACE
+  value: ${argoNamespace}
+- name: ARGO_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: ${argoServiceAccountTokenName}
+      key: "token"
+- name: ARGO_INGESTION_IMAGE
+  value: ${argoIngestionImage}
+- name: ARGO_WORKFLOW_EXECUTOR_SERVICE_ACCOUNT_NAME
+  value: ${argoWorkflowExecutorServiceAccountName}
+- name: ARGO_IMAGE_PULL_SECRETS
+  value: ${argoImagePullSecrets}

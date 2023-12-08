@@ -76,15 +76,3 @@ resource "kubernetes_secret" "om_role_token" {
   }
   type = "kubernetes.io/service-account-token"
 }
-
-# OM Dependencies helm release
-resource "helm_release" "openmetadata_dependencies" {
-  name      = "openmetadata-dependencies"
-  chart     = "open-metadata/openmetadata-dependencies"
-  namespace = kubernetes_namespace.argowf.id
-
-  values = [
-    file("openmetadata_deps.values.yml"),
-  ]
-  depends_on = [kubernetes_cron_job_v1.ecr_registry_helper]
-}

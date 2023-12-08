@@ -6,6 +6,8 @@ locals {
   argo = {
     namespace = "argowf"
   }
+  controllerName = "argo-workflows-controller-sa"
+  argoSAName     = "argo-workflows-server-sa"
 }
 
 ##
@@ -36,6 +38,10 @@ resource "helm_release" "argowf" {
   version    = "0.32.2"
   repository = "https://argoproj.github.io/argo-helm"
   values = [
-    file("argo-workflows.values.yml"),
+    templatefile("${path.module}/helm-dependencies/argowf_config.tftpl",
+      {
+        controllerName = local.controllerName
+        argoSAName     = local.argoSAName
+    })
   ]
 }

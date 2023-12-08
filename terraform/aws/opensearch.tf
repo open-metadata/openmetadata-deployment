@@ -68,7 +68,7 @@ resource "aws_opensearch_domain" "opensearch" {
 ## Security
 resource "aws_security_group" "opensearch_sg" {
   name        = "opensearch-sg"
-  description = "Private OpenSearch instance for sandbox"
+  description = "OpenSearch Instance Security Group"
   vpc_id      = data.aws_vpc.get_vpc.id
 
   ingress {

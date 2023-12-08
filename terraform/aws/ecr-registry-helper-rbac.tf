@@ -16,9 +16,9 @@ resource "kubernetes_role" "cron-role" {
   }
 
   rule {
-    verbs          = ["create", "delete"]
-    api_groups     = [""]
-    resources      = ["secrets"]
+    verbs      = ["create", "delete"]
+    api_groups = [""]
+    resources  = ["secrets"]
   }
 
 }
