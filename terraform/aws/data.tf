@@ -4,6 +4,7 @@ data "aws_eks_cluster" "eks" {
 data "aws_vpc" "get_vpc" {
   id = var.vpc_id
 }
+data "aws_caller_identity" "current" {}
 data "aws_subnets" "private" {
   filter {
     name   = "vpc-id"

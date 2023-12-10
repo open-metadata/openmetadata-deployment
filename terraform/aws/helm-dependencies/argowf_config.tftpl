@@ -9,3 +9,13 @@ server:
   extraArgs: 
     - "--auth-mode=server" 
     - "--request-timeout=5m"
+artifactRepository:
+    archiveLogs: true
+    s3:
+    endpoint: s3.amazonaws.com
+    bucket: ${s3BucketWorkflow}
+    keyFormat: workflows/{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}
+    insecure: false
+    region: ${artifactRegion}
+    encryptionOptions:
+        enableEncryption: true

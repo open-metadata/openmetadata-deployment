@@ -40,8 +40,10 @@ resource "helm_release" "argowf" {
   values = [
     templatefile("${path.module}/helm-dependencies/argowf_config.tftpl",
       {
-        controllerName = local.controllerName
-        argoSAName     = local.argoSAName
+        controllerName   = local.controllerName
+        argoSAName       = local.argoSAName
+        s3BucketWorkflow = var.bucket_name
+        artifactRegion   = var.region
     })
   ]
 }
