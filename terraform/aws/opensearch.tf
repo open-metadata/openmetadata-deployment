@@ -33,7 +33,7 @@ resource "aws_opensearch_domain" "opensearch" {
     internal_user_database_enabled = true
     master_user_options {
       master_user_name     = "admin"
-      master_user_password = kubernetes_secret.opensearch_secret.data["master-password"]
+      master_user_password = random_password.opensearch_password.result
     }
   }
 
@@ -51,8 +51,8 @@ resource "aws_opensearch_domain" "opensearch" {
   }
 
   vpc_options {
-    subnet_ids         = data.aws_subnets.private.ids
-    security_group_ids = [aws_security_group.opensearch_sg.id]
+    subnet_ids         = var.subnet_ids
+    security_group_ids = [module.opensearch_sg.security_group_id]
   }
 
   domain_endpoint_options {
@@ -66,16 +66,25 @@ resource "aws_opensearch_domain" "opensearch" {
 }
 
 ## Security
-resource "aws_security_group" "opensearch_sg" {
-  name        = "opensearch-sg"
-  description = "OpenSearch Instance Security Group"
-  vpc_id      = data.aws_vpc.get_vpc.id
+module "opensearch_sg" {
+  source             = "terraform-aws-modules/security-group/aws"
+  version            = "~>5.1"
+  create             = true
+  name               = "${var.opensearch_name}-opensearch"
+  description        = "Security group for OpenMetadata opensearch"
+  vpc_id             = var.vpc_id
+  egress_cidr_blocks = ["0.0.0.0/0"]
+  egress_rules       = ["all-all"]
 
-  ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
-  }
+  ingress_with_source_security_group_id = [for sg_id in var.eks_nodes_sg_ids :
+    {
+      from_port                = "443"
+      to_port                  = "443"
+      protocol                 = "tcp"
+      description              = "DB from ${sg_id}"
+      source_security_group_id = sg_id
+    }
+  ]
 }
 
 # ## Credentials

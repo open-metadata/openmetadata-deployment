@@ -1,21 +1,40 @@
 controller:
   serviceAccount:
     create: true
-    name: ${controllerName}
+    name: ${controllerSaName}
+    annotations:
+      eks.amazonaws.com/role-arn: ${ controller_iam_arn }
+  persistence:
+    archive: true
+    postgresql:
+      host: ${ db_host }
+      database: ${ db_name }
+      tableName: argo_workflows
+      userNameSecret:
+        name: ${ db_creds_secret }
+        key: username
+      passwordSecret:
+        name: ${ db_creds_secret }
+        key: password
+      ssl: true
+      sslMode: require
 server:
   serviceAccount:
     create: true
-    name: ${argoSAName}
+    name: ${serverSaName}
+    annotations:
+      eks.amazonaws.com/role-arn: ${ server_iam_arn }
+  
   extraArgs: 
-    - "--auth-mode=server" 
+    - "--auth-mode=client"
     - "--request-timeout=5m"
 artifactRepository:
     archiveLogs: true
     s3:
-    endpoint: s3.amazonaws.com
-    bucket: ${s3BucketWorkflow}
-    keyFormat: workflows/{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}
-    insecure: false
-    region: ${artifactRegion}
-    encryptionOptions:
-        enableEncryption: true
+      endpoint: s3.amazonaws.com
+      bucket: ${s3_bucket_name}
+      keyFormat: workflows/{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}
+      insecure: false
+      region: ${region}
+      encryptionOptions:
+          enableEncryption: true

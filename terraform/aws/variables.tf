@@ -1,14 +1,93 @@
 variable "eks_cluster" {
   type        = string
-  description = "Provide the name of EKS cluster"
+  description = "Name of EKS cluster"
 }
 variable "region" {
   type        = string
-  description = "Provide the region name for example:`us-east-2` "
+  description = "AWS region name, for example:`us-east-2` "
 }
+
+##
+## Shared resources
+##
+
+variable "kms_key_id" {
+  type        = string
+  description = "KMS Key to encrypt db and backups. Default will be used if not provided"
+  default     = null
+}
+
 variable "vpc_id" {
   type        = string
-  description = "Provide the VPC ID for example: `vpc-xxxxxxxxxx`"
+  description = "VPC ID to deploy databases and elasticsearch. For example: `vpc-xxxxxxxxxx`"
+}
+
+variable "eks_nodes_sg_ids" {
+  type        = list(string)
+  description = "Allow access from these security group ids to databases"
+  default     = []
+}
+variable "subnet_ids" {
+  type        = list(string)
+  description = "Create databases in these subnets"
+  default     = []
+}
+
+
+##
+## Argo Workflows
+##
+variable "argowf_db_instance_name" {
+  type        = string
+  default     = "argowf"
+  description = "Name of the ArgoWf DB instance"
+}
+
+variable "argowf_db_major_version" {
+  type        = string
+  description = "ArgoWf DB major version"
+  default     = "15"
+}
+
+variable "argowf_db_instance_class" {
+  type        = string
+  description = "ArgoWf DB instance type"
+  default     = "db.t4g.micro"
+}
+
+variable "argowf_db_storage" {
+  type        = string
+  description = "ArgoWf DB storage size"
+  default     = 10
+}
+variable "argowf_bucket_name" {
+  type        = string
+  description = "Provide the name of bucket for storing the argoworkflow logs"
+  default     = "argo-workflow-log"
+}
+
+##
+## Application
+##
+variable "app_namespace" {
+  type        = string
+  default     = "openmetadata"
+  description = "Namespace to deploy the OpenMetadata application"
+}
+variable "docker_image_name" {
+  type        = string
+  default     = "118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"
+  description = "Full path of the image name, excluding tag"
+}
+variable "docker_image_tag" {
+  type        = string
+  default     = ""
+  description = "Image tag for both the server and ingestion. Leave empty for default"
+}
+variable "ingestion_image_name" {
+  type        = string
+  default     = "118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"
+  description = "Full path of the ingestion image name, excluding tag"
 }
 variable "ECR_ACCESS_KEY" {
   type        = string
@@ -18,119 +97,36 @@ variable "ECR_SECRET_KEY" {
   type        = string
   description = "Provide the Secret Key shared from Collate to pull docker images"
 }
-variable "opensearch_name" {
+
+##
+## Application database
+##
+
+variable "db_instance_name" {
   type        = string
-  description = "Provide the OpenSearch Instance name"
-}
-variable "imageTag" {
-  type        = string
-  description = "Provide the Openmetadata application image tag in a specific format like `om-1.2.2-cl-1.2.2`"
-}
-variable "DOCKER_SECRET_NAME" {
-  type        = string
-  description = "Provide the name of secret to be created for authentication in aws"
-  default     = "ecr-registry-creds"
-}
-variable "argoIngestionImage" {
-  type        = string
-  description = "Provide the name of ingestion image for Openmetadata in the format like `118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1:om-1.2.2-cl-1.2.2` "
-}
-/* RDS VARIABLES */
-variable "instance_name" {
-  type        = string
-  description = "Name of the RDS instance"
-  default     = "rds-argo-workflows"
-}
-variable "db_name" {
-  type        = string
-  description = "Name of the initial database for RDS instance"
-  default     = "argowf"
-}
-variable "admin_name" {
-  type        = string
-  description = "Name of the database admin user"
-  default     = "root"
+  default     = "openmetadata"
+  description = "Name of the OpenMetadata DB instance"
 }
 
-variable "db_engine" {
+variable "db_major_version" {
   type        = string
-  description = "DB engine"
-  default     = "postgres"
-}
-
-variable "major_engine_version" {
-  type        = string
-  description = "DB major version"
+  description = "OpenMetadata DB major version"
   default     = "15"
 }
 
 variable "db_instance_class" {
   type        = string
-  description = "DB instance type"
-  default     = "db.t4g.micro"
+  description = "OpenMetadata DB instance type"
+  default     = "db.m7g.xlarge"
 }
 
 variable "db_storage" {
   type        = string
-  description = "DB storage capacity"
-  default     = 10
+  description = "OpenMetadata DB storage size"
+  default     = 120
 }
 
-variable "apply_rds_changes_immediately" {
-  type        = bool
-  default     = false
-  description = "Whether to apply RDS changes immediately. Otherwise it will be scheduled during db_maintenance_window"
-}
-
-variable "allow_from_sgs" {
-  type        = list(string)
-  description = "Allow access from these security group ids"
-  default     = []
-}
-
-variable "kms_key_id" {
-  type        = string
-  description = "KMS Key to encrypt db and backups. Default will be used if not provided"
-  default     = null
-}
-
-variable "snapshot_retention" {
-  type        = number
-  description = "Number of days to retain the DB backup"
-  default     = 30
-}
-
-variable "multi_az" {
-  type        = bool
-  description = "Deploy the database in multiple availability zones"
-  default     = true
-}
-
-variable "alarm_sns_topic" {
-  type        = string
-  description = "SNS Topic Name for CloudWatch Alarms"
-  default     = "sns-admin-prod"
-}
-
-variable "parameter_group_name" {
-  type        = string
-  description = "Provide the name of RDS Parameter group by client"
-  default     = "saas-collate"
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Tags to apply to the resources"
-  default     = {}
-}
-
-variable "instance_tags" {
-  type        = map(string)
-  description = "Tags to apply to the instance"
-  default     = {}
-}
-
-variable "parameters" {
+variable "db_parameters" {
   type = list(map(string))
   default = [
     {
@@ -141,10 +137,16 @@ variable "parameters" {
   description = "Parameters to pass to the DB parameter group"
 }
 
+##
+## S3 Bucket
+##
 
-/* S3 Bucket */
-variable "bucket_name" {
+
+##
+## ElasticSearch / OpenSearch
+##
+variable "opensearch_name" {
   type        = string
-  description = "Provide the name of bucket for storing the argoworkflow logs"
-  default     = "argo-workflow-log"
+  description = "Provide the OpenSearch Instance name"
+  default     = "openmetadata"
 }

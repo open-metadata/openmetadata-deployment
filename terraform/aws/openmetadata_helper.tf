@@ -4,20 +4,17 @@
 
 resource "kubernetes_service_account_v1" "om_argo_sa" {
   metadata {
-    name = "om-argo-wf-sa"
-
-    namespace = kubernetes_namespace.argowf.id
+    name      = "om-argo-wf-sa"
+    namespace = kubernetes_namespace.app.id
 
   }
-
-  depends_on = [kubernetes_namespace.argowf]
 }
 
 # OM Role
 resource "kubernetes_role" "om-argo-role" {
   metadata {
     name      = "om-argo-role"
-    namespace = kubernetes_namespace.argowf.id
+    namespace = kubernetes_namespace.app.id
   }
 
   rule {
@@ -49,7 +46,7 @@ resource "kubernetes_role" "om-argo-role" {
 resource "kubernetes_role_binding" "om-argo-role-binding" {
   metadata {
     name      = "om-argo-role-binding"
-    namespace = kubernetes_namespace.argowf.id
+    namespace = kubernetes_namespace.app.id
   }
 
   role_ref {
@@ -60,8 +57,8 @@ resource "kubernetes_role_binding" "om-argo-role-binding" {
 
   subject {
     kind      = "ServiceAccount"
-    name      = "om-argo-wf-sa"
-    namespace = kubernetes_namespace.argowf.id
+    name      = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
+    namespace = kubernetes_namespace.app.id
   }
 }
 
@@ -69,9 +66,9 @@ resource "kubernetes_role_binding" "om-argo-role-binding" {
 resource "kubernetes_secret" "om_role_token" {
   metadata {
     name      = "om-argo-wf-sa.service-account-token"
-    namespace = kubernetes_namespace.argowf.id
+    namespace = kubernetes_namespace.app.id
     annotations = {
-      "kubernetes.io/service-account.name" = "om-argo-wf-sa"
+      "kubernetes.io/service-account.name" = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
     }
   }
   type = "kubernetes.io/service-account-token"

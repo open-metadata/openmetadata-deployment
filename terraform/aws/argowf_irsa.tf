@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "argowf_server" {
 }
 
 resource "aws_iam_policy" "argowf_server" {
-  name   = "iam-${var.region}-argowf-server"
+  name   = "argowf-server-${var.region}"
   policy = data.aws_iam_policy_document.argowf_server.json
 }
 
@@ -26,13 +26,13 @@ module "irsa_role_argowf_server" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.22"
 
-  role_name        = "iam-${var.region}-argowf-server"
+  role_name        = "argowf-server-${var.region}"
   role_policy_arns = { "S3RO" = aws_iam_policy.argowf_server.arn }
 
   oidc_providers = {
     ex = {
       provider_arn               = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-      namespace_service_accounts = ["argowf:argowf-server"]
+      namespace_service_accounts = ["${local.argo.namespace}:${local.argo.server_sa_name}"]
     }
   }
 }
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "argowf_controller" {
 }
 
 resource "aws_iam_policy" "argowf_controller" {
-  name   = "iam-${var.region}-argowf-controller"
+  name   = "argowf-controller-${var.region}"
   policy = data.aws_iam_policy_document.argowf_controller.json
 }
 
@@ -70,7 +70,7 @@ module "irsa_role_argowf_controller" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.22"
 
-  role_name = "iam-${var.region}-argowf-controller"
+  role_name = "argowf-controller-${var.region}"
   role_policy_arns = {
     s3rw = aws_iam_policy.argowf_controller.arn
   }
@@ -78,7 +78,7 @@ module "irsa_role_argowf_controller" {
   oidc_providers = {
     ex = {
       provider_arn               = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
-      namespace_service_accounts = ["argowf:argowf-controller"]
+      namespace_service_accounts = ["${local.argo.namespace}:${local.argo.controller_sa_name}"]
     }
   }
 }
