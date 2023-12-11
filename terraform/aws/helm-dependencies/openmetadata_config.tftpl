@@ -1,0 +1,38 @@
+openmetadata:
+  config:
+    pipelineServiceClientConfig:
+      className: io.collate.pipeline.argo.ArgoServiceClient
+      apiEndpoint: http://argo-workflows-server.argowf.svc:2746
+      metadataApiEndpoint: http://openmetadata.${namespace}.svc:8585/api
+      auth:
+        enabled: false
+image:
+  repository: ${image_name}
+%{ if image_tag != "" ~}
+  tag: ${image_tag}
+%{ endif ~}
+%{ if image_pull_policy != "" ~}
+  pullPolicy: ${image_pull_policy}
+%{ endif ~}
+%{ if length(image_pull_secrets) > 0 ~}
+imagePullSecrets:
+%{ for ips in image_pull_secrets ~}
+- name: ${ips}
+%{ endfor ~}
+%{ endif ~}
+extraEnvs:
+- name: ARGO_NAMESPACE
+  value: ${argowf_namespace}
+- name: ARGO_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: ${argowf_token}
+      key: "token"
+- name: ARGO_INGESTION_IMAGE
+  value: ${ingestion_image_name}%{ if image_tag != "" }:${image_tag}%{ endif }
+- name: ARGO_WORKFLOW_EXECUTOR_SERVICE_ACCOUNT_NAME
+  value: ${argowf_sa}
+%{ if length(image_pull_secrets) > 0 ~}
+- name: ARGO_IMAGE_PULL_SECRETS
+  value: "${ join(",", image_pull_secrets) }"
+%{ endif ~}
