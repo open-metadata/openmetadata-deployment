@@ -12,4 +12,4 @@ You will also need to adapt the backup policies, naming, tags, etc to your compa
 
 ## BYOC - AWS
 
-Helper files to deploy OpenMetadata/Collate in AWS.
+Helper files to deploy OpenMetadata/Collate in AWS. Before using the files, please make sure to fill in the placeholders.
