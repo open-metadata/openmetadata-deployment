@@ -1,0 +1,28 @@
+# om-argo-role.yml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: om-argo-role
+  namespace: <<OPENMETADATA_NAMESPACE_NAME>>
+rules:
+  - verbs: [list, watch, create, update, patch, get, delete]
+    apiGroups:
+      - argoproj.io
+    resources:
+      - workflows
+  - verbs: [list, watch, patch, get]
+    apiGroups:
+      - ''
+    resources:
+      - pods/log
+      - pods
+  - verbs: [list, watch, create, update, patch, get, delete]
+    apiGroups:
+      - argoproj.io
+    resources:
+      - cronworkflows
+  - verbs: [create, patch]
+    apiGroups:
+      - argoproj.io
+    resources:
+      - workflowtaskresults
