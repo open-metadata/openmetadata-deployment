@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: om-role
+  namespace: <<OPENMETADATA_NAMESPACE_NAME>>
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::<AWS_ACCOUNT_ID>:role/collate-saas-ingestion-rw-pod-role
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: om-role.service-account-token
+  namespace: <<OPENMETADATA_NAMESPACE_NAME>>
+  annotations:
+    kubernetes.io/service-account.name: om-role
+type: kubernetes.io/service-account-token

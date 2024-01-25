@@ -1,0 +1,23 @@
+{
+  "Statement": [
+    {
+      "Action": "s3:ListBucket",
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::<AWS_S3_BUCKET_NAME>",
+      "Sid": "ListBuckets"
+    },
+    {
+      "Action": [
+        "s3:PutObjectVersionAcl",
+        "s3:PutObjectAcl",
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+      ],
+      "Effect": "Allow",
+      "Resource": "arn:aws:s3:::<AWS_S3_BUCKET_NAME>/workflows/collate/*",
+      "Sid": "S3RW"
+    }
+  ],
+  "Version": "2012-10-17"
+}

@@ -1,0 +1,46 @@
+# argo-workflows.values.yml
+controller:
+    serviceAccount:
+        create: true
+        name: argo-workflows-controller-sa
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::<AWS_ACCOUNT_ID>:role/collate-saas-s3-argowf-rw-controller-role
+# For Connecting ArgoWorkflows to PSQL Database for Archiving Workflows
+# Defaults to persistence disabled
+# Create Kubernetes Secret with Name argo-db-credentials
+# with Keys as username and password
+persistence:
+   archive: true
+   postgresql:
+      host: <DB_INSTANCE_ENDPOINT>
+      database: <DB_DATABASE_NAME>
+      tableName: argo_workflows
+    userNameSecret:
+        name: argo-db-credentials
+        key: username
+     passwordSecret:
+        name: argo-db-credentials
+        key: password
+     ssl: true
+     sslMode: require
+server:
+    serviceAccount:
+        create: true
+        name: argo-workflows-server-sa
+    annotations:
+      eks.amazonaws.com/role-arn: arn:aws:iam::<AWS_ACCOUNT_ID>:role/collate-saas-s3-argowf-ro-server-role
+    extraArgs: 
+        - "--auth-mode=server" 
+        - "--request-timeout=5m"
+useDefaultArtifactRepo: true
+useStaticCredentials: false
+artifactRepository:
+  archiveLogs: true
+  s3:
+    endpoint: s3.amazonaws.com
+    bucket: <AWS_S3_BUCKET_NAME>
+    keyFormat: workflows/{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}
+    insecure: false
+    region: <AWS_REGION>
+    encryptionOptions:
+      enableEncryption: true

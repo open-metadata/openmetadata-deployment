@@ -1,0 +1,27 @@
+# openmetadata.values.yml
+openmetadata:
+  config:
+    pipelineServiceClientConfig:
+      className: "io.collate.pipeline.argo.ArgoServiceClient"
+      apiEndpoint: "http://argo-workflows-server.argo-workflows:2746"
+      metadataApiEndpoint: "http://openmetadata:8585/api"
+image:
+  repository: <IMAGE_NAME>
+  tag: <IMAGE_TAG>
+  imagePullPolicy: IfNotPresent
+imagePullSecrets:
+- name: <<IMAGE_PULL_SECRETS_NAME>>
+extraEnvs:
+- name: ARGO_NAMESPACE
+  value: <<OPENMETADATA_NAMESPACE_NAME>>
+- name: ARGO_TOKEN
+  valueFrom:
+    secretKeyRef:
+      name: "om-role.service-account-token"
+      key: "token"
+- name: ARGO_INGESTION_IMAGE
+  value: "<IMAGE_NAME>:<IMAGE_TAG>"
+- name: ARGO_WORKFLOW_EXECUTOR_SERVICE_ACCOUNT_NAME
+  value: om-role
+- name: ARGO_IMAGE_PULL_SECRETS
+  value: <<IMAGE_PULL_SECRETS_NAME>>
