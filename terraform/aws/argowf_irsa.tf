@@ -31,7 +31,7 @@ module "irsa_role_argowf_server" {
 
   oidc_providers = {
     ex = {
-      provider_arn               = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+      provider_arn               = data.aws_iam_openid_connect_provider.oidc.arn
       namespace_service_accounts = ["${local.argo.namespace}:${local.argo.server_sa_name}"]
     }
   }
@@ -77,7 +77,7 @@ module "irsa_role_argowf_controller" {
 
   oidc_providers = {
     ex = {
-      provider_arn               = data.aws_eks_cluster.eks.identity[0].oidc[0].issuer
+      provider_arn               = data.aws_iam_openid_connect_provider.oidc.arn
       namespace_service_accounts = ["${local.argo.namespace}:${local.argo.controller_sa_name}"]
     }
   }
