@@ -61,6 +61,9 @@ resource "helm_release" "openmetadata" {
         image_pull_secrets   = ["omd-registry-credentials"]
         argowf_token         = "TODO" # To define
         argowf_sa            = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
+        db_host              = module.db_omd.db_instance_address
+        db_port              = module.db_omd.db_instance_port
+        db_user              = module.db_omd.db_instance_username
     })
   ]
 }

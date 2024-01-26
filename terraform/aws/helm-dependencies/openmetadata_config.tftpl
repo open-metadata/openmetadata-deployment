@@ -6,6 +6,18 @@ openmetadata:
       metadataApiEndpoint: http://openmetadata.${namespace}.svc:8585/api
       auth:
         enabled: false
+  database:
+    host: ${db_host}
+    port: ${db_port}
+    driverClass: org.postgresql.Driver
+    dbScheme: postgresql
+    auth:
+      username: ${db_user}
+      password:
+        secretRef: db-secrets
+        secretKey: openmetadata-mysql-password
+    dbParams: "allowPublicKeyRetrieval=true&useSSL=true&serverTimezone=UTC"
+
 image:
   repository: ${image_name}
 %{ if image_tag != "" ~}
