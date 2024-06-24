@@ -1,23 +1,23 @@
 resource "azurerm_user_assigned_identity" "argo_workflows" {
-  name                = var.application_namespace
+  name                = "${var.application_namespace}-application"
   location            = var.azure_location
   resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_user_assigned_identity" "argo_workflows_server_pod" {
-  name                = var.argo_namespace
+  name                = "${var.argo_namespace}-server"
   location            = var.azure_location
   resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_user_assigned_identity" "argo_workflows_controller_pod" {
-  name                = var.argo_namespace
+  name                = "${var.argo_namespace}-controller"
   location            = var.azure_location
   resource_group_name = var.resource_group_name
 }
 
 resource "azurerm_federated_identity_credential" "argo_workflows" {
-  name                = var.application_namespace
+  name                = "${var.application_namespace}-application"
   resource_group_name = var.resource_group_name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
@@ -26,7 +26,7 @@ resource "azurerm_federated_identity_credential" "argo_workflows" {
 }
 
 resource "azurerm_federated_identity_credential" "argo_workflows_server_pod" {
-  name                = var.argo_namespace
+  name                = "${var.argo_namespace}-server"
   resource_group_name = var.resource_group_name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
@@ -35,7 +35,7 @@ resource "azurerm_federated_identity_credential" "argo_workflows_server_pod" {
 }
 
 resource "azurerm_federated_identity_credential" "argo_workflows_controller_pod" {
-  name                = var.argo_namespace
+  name                = "${var.argo_namespace}-controller"
   resource_group_name = var.resource_group_name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
