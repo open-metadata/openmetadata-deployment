@@ -54,5 +54,10 @@ No modules.
 |------|-------------|
 | <a name="output_argo_workflows_azurerm_user_identity_client_id"></a> [argo\_workflows\_azurerm\_user\_identity\_client\_id](#output\_argo\_workflows\_azurerm\_user\_identity\_client\_id) | n/a |
 | <a name="output_argo_workflows_azurerm_user_identity_object_id"></a> [argo\_workflows\_azurerm\_user\_identity\_object\_id](#output\_argo\_workflows\_azurerm\_user\_identity\_object\_id) | n/a |
-| <a name="output_azurerm_storage_account"></a> [azurerm\_storage\_account](#output\_azurerm\_storage\_account) | n/a |
+| <a name="output_argo_workflows_controller_azurerm_user_identity_client_id"></a> [argo\_workflows\_controller\_azurerm\_user\_identity\_client\_id](#output\_argo\_workflows\_controller\_azurerm\_user\_identity\_client\_id) | n/a |
+| <a name="output_argo_workflows_controller_azurerm_user_identity_object_id"></a> [argo\_workflows\_controller\_azurerm\_user\_identity\_object\_id](#output\_argo\_workflows\_controller\_azurerm\_user\_identity\_object\_id) | n/a |
+| <a name="output_argo_workflows_server_azurerm_user_identity_client_id"></a> [argo\_workflows\_server\_azurerm\_user\_identity\_client\_id](#output\_argo\_workflows\_server\_azurerm\_user\_identity\_client\_id) | n/a |
+| <a name="output_argo_workflows_server_azurerm_user_identity_object_id"></a> [argo\_workflows\_server\_azurerm\_user\_identity\_object\_id](#output\_argo\_workflows\_server\_azurerm\_user\_identity\_object\_id) | n/a |
+| <a name="output_azurerm_storage_account_container_name"></a> [azurerm\_storage\_account\_container\_name](#output\_azurerm\_storage\_account\_container\_name) | n/a |
+| <a name="output_azurerm_storage_account_name"></a> [azurerm\_storage\_account\_name](#output\_azurerm\_storage\_account\_name) | n/a |
 <!-- END_TF_DOCS -->

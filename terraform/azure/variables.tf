@@ -27,17 +27,17 @@ variable "application_namespace" {
 }
 
 variable "argo_namespace" {
-  type = string
+  type        = string
   description = "The Namespace in AKS where ArgoWorkflows are installed."
 }
 
 variable "argo_server_service_account_name" {
-  type = string
+  type        = string
   description = "Service Account Name for Argo Workflows Server Pod."
 }
 
 variable "argo_controller_service_account_name" {
-  type = string
+  type        = string
   description = "Service Account Name for Argo Workflows Controller Pod."
 }
 
