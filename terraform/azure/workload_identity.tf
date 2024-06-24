@@ -22,7 +22,7 @@ resource "azurerm_federated_identity_credential" "argo_workflows" {
   audience            = ["api://AzureADTokenExchange"]
   issuer              = data.azurerm_kubernetes_cluster.aks.oidc_issuer_url
   parent_id           = azurerm_user_assigned_identity.argo_workflows.id
-  subject             = "system:serviceaccount:${var.application_namespace}:${var.service_account_name}"
+  subject             = "system:serviceaccount:${var.application_namespace}:${var.application_service_account_name}"
 }
 
 resource "azurerm_federated_identity_credential" "argo_workflows_server_pod" {

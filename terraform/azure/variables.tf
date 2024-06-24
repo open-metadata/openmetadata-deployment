@@ -41,7 +41,7 @@ variable "argo_controller_service_account_name" {
   description = "Service Account Name for Argo Workflows Controller Pod."
 }
 
-variable "service_account_name" {
+variable "application_service_account_name" {
   type        = string
   description = "The Service Account Name that will be used by Collate Ingestion."
 }
