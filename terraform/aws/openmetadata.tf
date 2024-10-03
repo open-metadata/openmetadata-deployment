@@ -47,7 +47,7 @@ resource "helm_release" "openmetadata" {
   name       = "openmetadata"
   repository = "https://helm.open-metadata.org"
   chart      = "openmetadata"
-  version    = "1.2.5"
+  version    = "1.5.5"
   namespace  = kubernetes_namespace.app.id
   values = [
     templatefile("${path.module}/helm-dependencies/openmetadata_config.tftpl",

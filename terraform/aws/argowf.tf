@@ -33,7 +33,7 @@ resource "helm_release" "argowf" {
   name       = "argowf"
   namespace  = local.argo.namespace
   chart      = "argo-workflows"
-  version    = "0.32.3"
+  version    = "0.40.8"
   repository = "https://argoproj.github.io/argo-helm"
   values = [
     templatefile("${path.module}/helm-dependencies/argowf_config.tftpl",
