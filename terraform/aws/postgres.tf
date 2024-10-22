@@ -1,18 +1,18 @@
-##
-## Random password
-##
+# Database resources
+
 resource "random_password" "db_password" {
-  length      = 16
-  min_upper   = 1
-  min_lower   = 1
-  min_numeric = 1
-  min_special = 1
-  special     = true
+  length           = 16
+  min_upper        = 1
+  min_lower        = 1
+  min_numeric      = 1
+  min_special      = 1
+  special          = true
+  override_special = "!#$%^&*()-_=+[]{}<>:?"
 }
 
 module "db_omd" {
   source  = "terraform-aws-modules/rds/aws"
-  version = "~>6.3"
+  version = "~>6.10"
 
   identifier                  = var.db_instance_name
   db_name                     = "openmetadata_db"
@@ -23,7 +23,7 @@ module "db_omd" {
   # master_user_secret_kms_key_id = var.kms_key_id
 
   engine               = "postgres"
-  family               = "postgres15"
+  family               = "postgres${var.db_major_version}"
   major_engine_version = var.db_major_version
   instance_class       = var.db_instance_class
 
@@ -57,7 +57,7 @@ module "db_omd" {
 
 module "sg_db" {
   source             = "terraform-aws-modules/security-group/aws"
-  version            = "~>5.1"
+  version            = "~>5.2"
   create             = true
   name               = "${var.db_instance_name}-db"
   description        = "Security group for OpenMetadata db"
@@ -74,4 +74,15 @@ module "sg_db" {
       source_security_group_id = sg_id
     }
   ]
+}
+
+resource "kubernetes_secret" "db_credentials" {
+  metadata {
+    name      = "db-secrets"
+    namespace = kubernetes_namespace.app.id
+  }
+
+  data = {
+    openmetadata-mysql-password = random_password.db_password.result
+  }
 }

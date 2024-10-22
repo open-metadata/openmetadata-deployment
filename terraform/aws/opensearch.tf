@@ -1,4 +1,5 @@
-# IAM policy
+# OpenSearch resources
+
 data "aws_iam_policy_document" "opensearch" {
   statement {
     effect = "Allow"
@@ -13,7 +14,6 @@ data "aws_iam_policy_document" "opensearch" {
   }
 }
 
-# OpenSearch Resource
 resource "aws_opensearch_domain" "opensearch" {
   domain_name    = var.opensearch_name
   engine_version = "OpenSearch_2.7"
@@ -51,7 +51,7 @@ resource "aws_opensearch_domain" "opensearch" {
   }
 
   vpc_options {
-    subnet_ids         = var.subnet_ids
+    subnet_ids         = slice(var.subnet_ids, 0, 2)
     security_group_ids = [module.opensearch_sg.security_group_id]
   }
 
@@ -60,15 +60,12 @@ resource "aws_opensearch_domain" "opensearch" {
     tls_security_policy = "Policy-Min-TLS-1-2-2019-07"
   }
 
-
   access_policies = data.aws_iam_policy_document.opensearch.json
-
 }
 
-## Security
 module "opensearch_sg" {
   source             = "terraform-aws-modules/security-group/aws"
-  version            = "~>5.1"
+  version            = "~>5.2"
   create             = true
   name               = "${var.opensearch_name}-opensearch"
   description        = "Security group for OpenMetadata opensearch"
@@ -87,7 +84,9 @@ module "opensearch_sg" {
   ]
 }
 
-# ## Credentials
+
+# Search engine credentials
+
 resource "random_password" "opensearch_password" {
   length      = 16
   min_upper   = 1
@@ -97,14 +96,13 @@ resource "random_password" "opensearch_password" {
   special     = true
 }
 
-#secret
-resource "kubernetes_secret" "opensearch_secret" {
+resource "kubernetes_secret" "opensearch_credentials" {
   metadata {
-    name      = "opensearch-secret"
-    namespace = kubernetes_namespace.argowf.id
+    name      = "opensearch-credentials"
+    namespace = kubernetes_namespace.app.id
   }
 
   data = {
-    master-password = base64encode(random_password.opensearch_password.result)
+    master-password = random_password.opensearch_password.result
   }
 }

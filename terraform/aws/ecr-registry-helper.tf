@@ -1,6 +1,4 @@
-##
-## Helper to refresh Collate image credentials
-##
+# Helper to refresh Collate Docker image credentials
 
 resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
@@ -57,13 +55,12 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
 }
 
 
-##
-## Configuration assets
-##
+# Configuration assets
+
 resource "kubernetes_secret" "ecr_registry_helper" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
-    name      = "omd-registry-credentials"
+    name      = "omd-ecr-credentials"
     namespace = kubernetes_namespace.app.id
   }
   data = {
@@ -87,10 +84,10 @@ resource "kubernetes_config_map" "ecr_registry_helper_config" {
   }
 }
 
-##
-## Roles and role binding
-## grants the CronJob permission to delete and create secrets in the desired namespace.
-##
+
+# Roles and role binding
+# Grants the CronJob permission to delete and create secrets in the desired namespace.
+
 resource "kubernetes_service_account_v1" "omd_cron_sa" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
@@ -112,7 +109,6 @@ resource "kubernetes_role" "secrets" {
     api_groups = [""]
     resources  = ["secrets"]
   }
-
 }
 
 resource "kubernetes_role_binding" "cron" {

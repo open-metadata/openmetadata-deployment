@@ -6,17 +6,27 @@ openmetadata:
       metadataApiEndpoint: http://openmetadata.${namespace}.svc:8585/api
       auth:
         enabled: false
-  database:
-    host: ${db_host}
-    port: ${db_port}
-    driverClass: org.postgresql.Driver
-    dbScheme: postgresql
-    auth:
-      username: ${db_user}
-      password:
-        secretRef: db-secrets
-        secretKey: openmetadata-mysql-password
-    dbParams: "allowPublicKeyRetrieval=true&useSSL=true&serverTimezone=UTC"
+    elasticsearch:
+      host: ${es_host}
+      port: ${es_port}
+      scheme: ${es_scheme}
+      auth:
+        enabled: true
+        username: ${es_username}
+        password:
+          secretRef: ${es_secret}
+          secretKey: ${es_secret_key}
+    database:
+      host: ${db_host}
+      port: ${db_port}
+      driverClass: org.postgresql.Driver
+      dbScheme: postgresql
+      auth:
+        username: ${db_user}
+        password:
+          secretRef: db-secrets
+          secretKey: openmetadata-mysql-password
+      dbParams: "allowPublicKeyRetrieval=true&useSSL=true&serverTimezone=UTC"
 
 image:
   repository: ${image_name}
@@ -34,7 +44,7 @@ imagePullSecrets:
 %{ endif ~}
 extraEnvs:
 - name: ARGO_NAMESPACE
-  value: ${argowf_namespace}
+  value: ${workflows_execution_namespace}
 - name: ARGO_TOKEN
   valueFrom:
     secretKeyRef:
