@@ -1,16 +1,18 @@
-##
-## Service Account
-##
+# Service Account
 
-resource "kubernetes_service_account_v1" "om_argo_sa" {
+resource "kubernetes_service_account_v1" "om_role" {
   metadata {
-    name      = "om-argo-wf-sa"
+    name      = "om-role"
     namespace = kubernetes_namespace.app.id
-
+    annotations = {
+      "eks.amazonaws.com/role-arn" = module.irsa_role_argowf_jobs.iam_role_arn
+    }
   }
 }
 
-# OM Role
+
+# OpenMetadata role
+
 resource "kubernetes_role" "om-argo-role" {
   metadata {
     name      = "om-argo-role"
@@ -42,7 +44,9 @@ resource "kubernetes_role" "om-argo-role" {
   }
 }
 
-# OM role binding
+
+# OpenMetadata role binding
+
 resource "kubernetes_role_binding" "om-argo-role-binding" {
   metadata {
     name      = "om-argo-role-binding"
@@ -57,18 +61,20 @@ resource "kubernetes_role_binding" "om-argo-role-binding" {
 
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
+    name      = kubernetes_service_account_v1.om_role.metadata[0].name
     namespace = kubernetes_namespace.app.id
   }
 }
 
-# OM secret
+
+# OpenMetadata secret
+
 resource "kubernetes_secret" "om_role_token" {
   metadata {
-    name      = "om-argo-wf-sa.service-account-token"
+    name      = "om-role.service-account-token"
     namespace = kubernetes_namespace.app.id
     annotations = {
-      "kubernetes.io/service-account.name" = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
+      "kubernetes.io/service-account.name" = kubernetes_service_account_v1.om_role.metadata[0].name
     }
   }
   type = "kubernetes.io/service-account-token"

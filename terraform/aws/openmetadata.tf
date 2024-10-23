@@ -1,10 +1,8 @@
-##
-## Locals
-##
-
 locals {
   omd = {
-    namespace = var.app_namespace
+    namespace          = var.app_namespace
+    helm_chart_version = coalesce(var.app_helm_chart_version, var.app_version)
+    docker_image_tag   = coalesce(var.docker_image_tag, "om-${var.app_version}-cl-${var.app_version}")
   }
   className                   = "io.collate.pipeline.argo.ArgoServiceClient"
   apiEndpoint                 = "http://argowf-argo-workflows-server:2746"
@@ -13,9 +11,8 @@ locals {
   argoServiceAccountTokenName = "om-argo-wf-sa.service-account-token"
 }
 
-##
-## Namespace
-##
+
+# OpenMetadata application resources
 
 resource "kubernetes_namespace" "app" {
   metadata {
@@ -26,44 +23,39 @@ resource "kubernetes_namespace" "app" {
   }
 }
 
-##
-## Database credentials secret
-##
-resource "kubernetes_secret" "db_credentials" {
-  metadata {
-    name      = "db-secrets"
-    namespace = kubernetes_namespace.app.id
-  }
-
-  data = {
-    openmetadata-mysql-password = base64encode(random_password.db_password.result)
-  }
-}
-
-##
-## Application Helm release
-##
 resource "helm_release" "openmetadata" {
   name       = "openmetadata"
   repository = "https://helm.open-metadata.org"
   chart      = "openmetadata"
-  version    = "1.5.5"
+  version    = local.omd.helm_chart_version
   namespace  = kubernetes_namespace.app.id
+  wait       = false
   values = [
     templatefile("${path.module}/helm-dependencies/openmetadata_config.tftpl",
       {
-        namespace            = var.app_namespace
-        image_name           = var.docker_image_name
-        image_tag            = var.docker_image_tag
-        ingestion_image_name = var.ingestion_image_name
-        argowf_namespace     = kubernetes_namespace.argowf.id
-        image_pull_policy    = "always"
-        image_pull_secrets   = ["omd-registry-credentials"]
-        argowf_token         = "TODO" # To define
-        argowf_sa            = kubernetes_service_account_v1.om_argo_sa.metadata[0].name
-        db_host              = module.db_omd.db_instance_address
-        db_port              = module.db_omd.db_instance_port
-        db_user              = module.db_omd.db_instance_username
-    })
+        namespace                     = local.omd.namespace
+        image_name                    = var.docker_image_name
+        image_tag                     = local.omd.docker_image_tag
+        ingestion_image_name          = var.ingestion_image_name
+        initial_admins                = jsonencode(var.initial_admins)
+        principal_domain              = var.principal_domain
+        workflows_execution_namespace = local.omd.namespace
+        image_pull_policy             = "Always"
+        image_pull_secrets            = ["omd-registry-credentials"]
+        argowf_token                  = kubernetes_secret.om_role_token.metadata[0].name
+        argowf_sa                     = kubernetes_service_account_v1.om_role.metadata[0].name
+        db_host                       = module.db_omd.db_instance_address
+        db_port                       = module.db_omd.db_instance_port
+        db_user                       = module.db_omd.db_instance_username
+        db_secret                     = kubernetes_secret.db_credentials.metadata[0].name
+        db_secret_key                 = "password"
+        es_host                       = aws_opensearch_domain.opensearch.endpoint
+        es_port                       = "443"
+        es_scheme                     = "https"
+        es_username                   = "admin"
+        es_secret                     = kubernetes_secret.opensearch_credentials.metadata[0].name
+        es_secret_key                 = "master-password"
+      }
+    )
   ]
 }
