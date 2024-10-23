@@ -6,6 +6,9 @@ openmetadata:
       metadataApiEndpoint: http://openmetadata.${namespace}.svc:8585/api
       auth:
         enabled: false
+    authorizer:
+      initialAdmins: ${initial_admins}
+      principalDomain: ${principal_domain}
     elasticsearch:
       host: ${es_host}
       port: ${es_port}
@@ -24,8 +27,8 @@ openmetadata:
       auth:
         username: ${db_user}
         password:
-          secretRef: db-secrets
-          secretKey: openmetadata-mysql-password
+          secretRef: ${db_secret}
+          secretKey: ${db_secret_key}
       dbParams: "allowPublicKeyRetrieval=true&useSSL=true&serverTimezone=UTC"
 
 image:

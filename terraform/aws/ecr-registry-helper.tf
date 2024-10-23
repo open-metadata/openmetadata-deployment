@@ -1,52 +1,45 @@
 # Helper to refresh Collate Docker image credentials
 
-resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
+locals {
+  registry_helper_manifest = yamldecode(<<-EOF
+  serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
+  containers:
+    - name: "ecr-registry-helper"
+      image: "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
+      envFrom:
+        - secretRef:
+            name: "${kubernetes_secret.ecr_registry_helper[0].metadata[0].name}"
+        - configMapRef:
+            name: "${kubernetes_config_map.ecr_registry_helper_config[0].metadata[0].name}"
+      command: ["/bin/bash", "-c"]
+      args:
+      - ECR_TOKEN="$(aws ecr get-login-password)" &&
+        kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME &&
+        kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=https://118146679784.dkr.ecr.eu-west-1.amazonaws.com --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME &&
+        echo "Secret was successfully updated at $(date)"
+  restartPolicy: "Never"
+  EOF
+  )
+}
+
+resource "kubernetes_manifest" "ecr_registry_helper_cronjob" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
-  metadata {
-    name      = "ecr-registry-helper"
-    namespace = kubernetes_namespace.app.id
-  }
-
-  spec {
-    schedule                      = "* */6 * * *"
-    starting_deadline_seconds     = 10
-    successful_jobs_history_limit = 2
-    suspend                       = false
-
-    job_template {
-      metadata {
-        name = "ecr-registry-helper-job"
-      }
-      spec {
-        template {
-          metadata {
-            name = "ecr-registry-helper-pod"
-          }
-          spec {
-            service_account_name = kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name
-            container {
-              name  = "ecr-registry-helper"
-              image = "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
-              env_from {
-                secret_ref {
-                  name = kubernetes_secret.ecr_registry_helper[0].metadata[0].name
-                }
-              }
-              env_from {
-                config_map_ref {
-                  name = kubernetes_config_map.ecr_registry_helper_config[0].metadata[0].name
-                }
-              }
-              command = ["/bin/bash", "-c", <<-EOF
-                 ECR_TOKEN="$(aws ecr get-login-password)"
-                 kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME
-                 kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=https://118146679784.dkr.ecr.eu-west-1.amazonaws.com --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME
-                 echo "Secret was successfully updated at $(date)"
-               EOF
-              ]
-            }
-
-            restart_policy = "Never"
+  manifest = {
+    apiVersion = "batch/v1"
+    kind       = "CronJob"
+    metadata = {
+      name      = "ecr-registry-helper"
+      namespace = kubernetes_namespace.app.id
+    }
+    spec = {
+      schedule                   = "* */6 * * *"
+      startingDeadlineSeconds    = 10
+      successfulJobsHistoryLimit = 2
+      suspend                    = false
+      jobTemplate = {
+        spec = {
+          template = {
+            spec = local.registry_helper_manifest
           }
         }
       }
@@ -54,6 +47,23 @@ resource "kubernetes_cron_job_v1" "ecr_registry_helper" {
   }
 }
 
+# Job to run the helper immediately after deployment
+resource "kubernetes_manifest" "ecr_registry_helper_one_shot" {
+  count = var.ECR_ACCESS_KEY != null ? 1 : 0
+  manifest = {
+    apiVersion = "batch/v1"
+    kind       = "Job"
+    metadata = {
+      name      = "ecr-registry-helper-one-shot"
+      namespace = kubernetes_namespace.app.id
+    }
+    spec = {
+      template = {
+        spec = local.registry_helper_manifest
+      }
+    }
+  }
+}
 
 # Configuration assets
 

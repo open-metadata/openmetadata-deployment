@@ -34,6 +34,18 @@ variable "vpc_id" {
 
 # OpenMetadata application
 
+variable "app_version" {
+  type        = string
+  description = "The version of the OpenMetadata application to deploy."
+  default     = "1.5.7"
+}
+
+variable "app_helm_chart_version" {
+  type        = string
+  description = "The version of the OpenMetadata Helm chart to deploy. If not specified, the variable `app_version` will be used."
+  default     = null
+}
+
 variable "app_namespace" {
   type        = string
   default     = "openmetadata"
@@ -48,8 +60,8 @@ variable "docker_image_name" {
 
 variable "docker_image_tag" {
   type        = string
-  default     = "om-1.5.7-cl-1.5.7"
-  description = "Docker image tag for both the server and ingestion."
+  default     = null
+  description = "Docker image tag for both the server and ingestion. If not specified, the variable `app_version` will be used."
 }
 
 variable "ingestion_image_name" {
@@ -66,6 +78,18 @@ variable "ECR_ACCESS_KEY" {
 variable "ECR_SECRET_KEY" {
   type        = string
   description = "The Secret Key shared by Collate to pull Docker images from ECR."
+}
+
+variable "initial_admins" {
+  type        = list(string)
+  description = "List of initial admins to create in the OpenMetadata application. Do not include the domain name."
+  default     = ["admin"]
+}
+
+variable "principal_domain" {
+  type        = string
+  description = "The domain name of the users. For example, `open-metadata.org`."
+  default     = "open-metadata.org"
 }
 
 
@@ -107,6 +131,15 @@ variable "db_parameters" {
 }
 
 
+# Argo Workflows
+
+variable "argowf_helm_chart_version" {
+  type        = string
+  description = "The version of the Argo Workflows Helm chart to deploy."
+  default     = "0.40.8"
+}
+
+
 # Argo Workflows database
 
 variable "argowf_db_instance_name" {
@@ -143,7 +176,7 @@ variable "argowf_db_major_version" {
 
 variable "s3_bucket_name" {
   type        = string
-  description = "The name of S3 bucket for storing the Argo Workflows logs and OpenMetadata assets."
+  description = "The name of S3 bucket for storing the Argo Workflows logs and OpenMetadata assets. If not specified, a random name will be generated with the `openmetadata-` prefix."
   default     = null
 }
 

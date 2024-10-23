@@ -1,6 +1,8 @@
 locals {
   omd = {
-    namespace = var.app_namespace
+    namespace          = var.app_namespace
+    helm_chart_version = coalesce(var.app_helm_chart_version, var.app_version)
+    docker_image_tag   = coalesce(var.docker_image_tag, "om-${var.app_version}-cl-${var.app_version}")
   }
   className                   = "io.collate.pipeline.argo.ArgoServiceClient"
   apiEndpoint                 = "http://argowf-argo-workflows-server:2746"
@@ -25,17 +27,19 @@ resource "helm_release" "openmetadata" {
   name       = "openmetadata"
   repository = "https://helm.open-metadata.org"
   chart      = "openmetadata"
-  version    = "1.5.5"
+  version    = local.omd.helm_chart_version
   namespace  = kubernetes_namespace.app.id
   wait       = false
   values = [
     templatefile("${path.module}/helm-dependencies/openmetadata_config.tftpl",
       {
-        namespace                     = var.app_namespace
+        namespace                     = local.omd.namespace
         image_name                    = var.docker_image_name
-        image_tag                     = var.docker_image_tag
+        image_tag                     = local.omd.docker_image_tag
         ingestion_image_name          = var.ingestion_image_name
-        workflows_execution_namespace = var.app_namespace
+        initial_admins                = jsonencode(var.initial_admins)
+        principal_domain              = var.principal_domain
+        workflows_execution_namespace = local.omd.namespace
         image_pull_policy             = "Always"
         image_pull_secrets            = ["omd-registry-credentials"]
         argowf_token                  = kubernetes_secret.om_role_token.metadata[0].name
@@ -43,6 +47,8 @@ resource "helm_release" "openmetadata" {
         db_host                       = module.db_omd.db_instance_address
         db_port                       = module.db_omd.db_instance_port
         db_user                       = module.db_omd.db_instance_username
+        db_secret                     = kubernetes_secret.db_credentials.metadata[0].name
+        db_secret_key                 = "password"
         es_host                       = aws_opensearch_domain.opensearch.endpoint
         es_port                       = "443"
         es_scheme                     = "https"

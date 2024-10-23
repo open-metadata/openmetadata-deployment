@@ -39,7 +39,7 @@ resource "aws_opensearch_domain" "opensearch" {
 
   ebs_options {
     ebs_enabled = true
-    volume_size = "30"
+    volume_size = "50"
   }
 
   encrypt_at_rest {

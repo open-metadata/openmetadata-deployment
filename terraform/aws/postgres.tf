@@ -83,6 +83,6 @@ resource "kubernetes_secret" "db_credentials" {
   }
 
   data = {
-    openmetadata-mysql-password = random_password.db_password.result
+    password = random_password.db_password.result
   }
 }
