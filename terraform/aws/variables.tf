@@ -37,7 +37,7 @@ variable "vpc_id" {
 variable "app_version" {
   type        = string
   description = "The version of the OpenMetadata application to deploy."
-  default     = "1.5.7"
+  default     = "1.6.3"
 }
 
 variable "app_helm_chart_version" {
@@ -95,22 +95,22 @@ variable "principal_domain" {
 
 # OpenMetadata database
 
-variable "db_instance_name" {
-  type        = string
-  default     = "openmetadata"
-  description = "Name of the OpenMetadata database instance."
-}
-
 variable "db_instance_class" {
   type        = string
   description = "OpenMetadata database instance type."
   default     = "db.m7g.large"
 }
 
-variable "db_storage" {
+variable "db_instance_name" {
   type        = string
-  description = "OpenMetadata database storage size."
-  default     = 100
+  default     = "openmetadata"
+  description = "Name of the OpenMetadata database instance."
+}
+
+variable "db_iops" {
+  description = "The amount of provisioned IOPS for OpenMetadata database. Setting this implies a db_storage_type of 'io1' or `gp3`."
+  type        = number
+  default     = null
 }
 
 variable "db_major_version" {
@@ -130,6 +130,23 @@ variable "db_parameters" {
   description = "List of parameters to use in the OpenMetadata database parameter group."
 }
 
+variable "db_storage" {
+  type        = string
+  description = "OpenMetadata database storage size."
+  default     = 100
+}
+
+variable "db_storage_type" {
+  type        = string
+  description = "OpenMetadata database storage type."
+  default     = "gp3"
+}
+
+variable "db_storage_throughput" {
+  description = "OpenMetadata storage throughput value for the DB instance. Setting this implies a db_storage_type of 'io1' or `gp3`."
+  type        = number
+  default     = null
+}
 
 # Argo Workflows
 
@@ -142,22 +159,22 @@ variable "argowf_helm_chart_version" {
 
 # Argo Workflows database
 
-variable "argowf_db_instance_name" {
-  type        = string
-  default     = "argowf"
-  description = "Name of the Argo Workflows database instance."
-}
-
 variable "argowf_db_instance_class" {
   type        = string
   description = "Argo Workflows database instance type."
   default     = "db.t4g.micro"
 }
 
-variable "argowf_db_storage" {
+variable "argowf_db_instance_name" {
   type        = string
-  description = "Argo Workflows database storage size."
-  default     = 10
+  default     = "argowf"
+  description = "Name of the Argo Workflows database instance."
+}
+
+variable "argowf_db_iops" {
+  description = "The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db_storage_type of 'io1' or `gp3`."
+  type        = number
+  default     = null
 }
 
 variable "argowf_db_major_version" {
@@ -169,6 +186,24 @@ variable "argowf_db_major_version" {
     condition     = contains(["12", "13", "14", "15", "16"], var.argowf_db_major_version)
     error_message = "Invalid PostgreSQL version. The version must be '12', '13', '14', '15', or '16'"
   }
+}
+
+variable "argowf_db_storage" {
+  type        = string
+  description = "Argo Workflows database storage size."
+  default     = 50
+}
+
+variable "argowf_db_storage_type" {
+  type        = string
+  description = "Argo Workflows database storage type."
+  default     = "gp3"
+}
+
+variable "argowf_db_storage_throughput" {
+  description = "Argo Workflows storage throughput value for the DB instance. Setting this implies a db_storage_type of 'io1' or `gp3`."
+  type        = number
+  default     = null
 }
 
 

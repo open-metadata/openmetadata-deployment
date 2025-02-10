@@ -79,6 +79,10 @@ module "rds_argo_workflows" {
   copy_tags_to_snapshot = true
   apply_immediately     = true
 
+  storage_type       = var.argowf_db_storage_type
+  iops               = var.argowf_db_iops
+  storage_throughput = var.argowf_db_storage_throughput
+
   iam_database_authentication_enabled = true
   multi_az                            = false
 
