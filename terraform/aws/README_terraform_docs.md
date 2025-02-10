@@ -79,7 +79,7 @@
 | <a name="input_argowf_db_instance_name"></a> [argowf\_db\_instance\_name](#input\_argowf\_db\_instance\_name) | Name of the Argo Workflows database instance. | `string` | `"argowf"` | no |
 | <a name="input_argowf_db_iops"></a> [argowf\_db\_iops](#input\_argowf\_db\_iops) | The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_argowf_db_major_version"></a> [argowf\_db\_major\_version](#input\_argowf\_db\_major\_version) | Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive. | `string` | `"16"` | no |
-| <a name="input_argowf_db_storage"></a> [argowf\_db\_storage](#input\_argowf\_db\_storage) | Argo Workflows database storage size. | `string` | `20` | no |
+| <a name="input_argowf_db_storage"></a> [argowf\_db\_storage](#input\_argowf\_db\_storage) | Argo Workflows database storage size. | `string` | `50` | no |
 | <a name="input_argowf_db_storage_throughput"></a> [argowf\_db\_storage\_throughput](#input\_argowf\_db\_storage\_throughput) | Argo Workflows storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_argowf_db_storage_type"></a> [argowf\_db\_storage\_type](#input\_argowf\_db\_storage\_type) | Argo Workflows database storage type. | `string` | `"gp3"` | no |
 | <a name="input_argowf_helm_chart_version"></a> [argowf\_helm\_chart\_version](#input\_argowf\_helm\_chart\_version) | The version of the Argo Workflows Helm chart to deploy. | `string` | `"0.40.8"` | no |
