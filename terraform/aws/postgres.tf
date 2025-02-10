@@ -33,6 +33,10 @@ module "db_omd" {
   copy_tags_to_snapshot = true
   apply_immediately     = true
 
+  storage_type       = var.db_storage_type
+  iops               = var.db_iops
+  storage_throughput = var.db_storage_throughput
+
   iam_database_authentication_enabled = true
   multi_az                            = true
 
