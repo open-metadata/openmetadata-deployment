@@ -41,7 +41,7 @@ This will create the necessary resources in your AWS account.
 At this stage you should be able to connect to the deployed OpenMetadata via the Kubernetes service. For this, you can use the following command:
 
 ```bash
-  kubectl port-forward service/openmetadata 8585:8585
+  kubectl port-forward service/openmetadata 8585:8585 -n openmetadata
 ```
 
 And then open your browser at <http://localhost:8585>.

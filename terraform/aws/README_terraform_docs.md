@@ -74,31 +74,39 @@
 | <a name="input_ECR_SECRET_KEY"></a> [ECR\_SECRET\_KEY](#input\_ECR\_SECRET\_KEY) | The Secret Key shared by Collate to pull Docker images from ECR. | `string` | n/a | yes |
 | <a name="input_app_helm_chart_version"></a> [app\_helm\_chart\_version](#input\_app\_helm\_chart\_version) | The version of the OpenMetadata Helm chart to deploy. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Namespace to deploy the OpenMetadata application. | `string` | `"openmetadata"` | no |
-| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.5.7"` | no |
+| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.6.3"` | no |
 | <a name="input_argowf_db_instance_class"></a> [argowf\_db\_instance\_class](#input\_argowf\_db\_instance\_class) | Argo Workflows database instance type. | `string` | `"db.t4g.micro"` | no |
 | <a name="input_argowf_db_instance_name"></a> [argowf\_db\_instance\_name](#input\_argowf\_db\_instance\_name) | Name of the Argo Workflows database instance. | `string` | `"argowf"` | no |
+| <a name="input_argowf_db_iops"></a> [argowf\_db\_iops](#input\_argowf\_db\_iops) | The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_argowf_db_major_version"></a> [argowf\_db\_major\_version](#input\_argowf\_db\_major\_version) | Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive. | `string` | `"16"` | no |
 | <a name="input_argowf_db_storage"></a> [argowf\_db\_storage](#input\_argowf\_db\_storage) | Argo Workflows database storage size. | `string` | `10` | no |
+| <a name="input_argowf_db_storage_throughput"></a> [argowf\_db\_storage\_throughput](#input\_argowf\_db\_storage\_throughput) | Argo Workflows storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
+| <a name="input_argowf_db_storage_type"></a> [argowf\_db\_storage\_type](#input\_argowf\_db\_storage\_type) | Argo Workflows database storage type. | `string` | `"gp3"` | no |
 | <a name="input_argowf_helm_chart_version"></a> [argowf\_helm\_chart\_version](#input\_argowf\_helm\_chart\_version) | The version of the Argo Workflows Helm chart to deploy. | `string` | `"0.40.8"` | no |
 | <a name="input_db_instance_class"></a> [db\_instance\_class](#input\_db\_instance\_class) | OpenMetadata database instance type. | `string` | `"db.m7g.large"` | no |
 | <a name="input_db_instance_name"></a> [db\_instance\_name](#input\_db\_instance\_name) | Name of the OpenMetadata database instance. | `string` | `"openmetadata"` | no |
+| <a name="input_db_iops"></a> [db\_iops](#input\_db\_iops) | The amount of provisioned IOPS for OpenMetadata database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_db_major_version"></a> [db\_major\_version](#input\_db\_major\_version) | OpenMetadata database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive. | `string` | `"16"` | no |
 | <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | List of parameters to use in the OpenMetadata database parameter group. | `list(map(string))` | `[]` | no |
 | <a name="input_db_storage"></a> [db\_storage](#input\_db\_storage) | OpenMetadata database storage size. | `string` | `100` | no |
+| <a name="input_db_storage_throughput"></a> [db\_storage\_throughput](#input\_db\_storage\_throughput) | OpenMetadata storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
+| <a name="input_db_storage_type"></a> [db\_storage\_type](#input\_db\_storage\_type) | OpenMetadata database storage type. | `string` | `"gp3"` | no |
 | <a name="input_docker_image_name"></a> [docker\_image\_name](#input\_docker\_image\_name) | Full path of the server Docker image name, excluding the tag. | `string` | `"118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"` | no |
 | <a name="input_docker_image_tag"></a> [docker\_image\_tag](#input\_docker\_image\_tag) | Docker image tag for both the server and ingestion. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_eks_cluster"></a> [eks\_cluster](#input\_eks\_cluster) | Name of the EKS cluster where OpenMetadata will be deployed. | `string` | n/a | yes |
 | <a name="input_eks_nodes_sg_ids"></a> [eks\_nodes\_sg\_ids](#input\_eks\_nodes\_sg\_ids) | List of security group IDs attached to the EKS nodes. Used to allow traffic from the OpenMetadata application to the databases. | `list(string)` | `[]` | no |
 | <a name="input_ingestion_image_name"></a> [ingestion\_image\_name](#input\_ingestion\_image\_name) | Full path of the ingestion Docker image name, excluding the tag. | `string` | `"118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"` | no |
-| <a name="input_initial_admins"></a> [initial\_admins](#input\_initial\_admins) | List of initial admins to create in the OpenMetadata application. Do not include the domain name. | `list(string)` | <pre>[<br>  "admin"<br>]</pre> | no |
+| <a name="input_initial_admins"></a> [initial\_admins](#input\_initial\_admins) | List of initial admins to create in the OpenMetadata application. Do not include the domain name. | `list(string)` | <pre>[<br/>  "admin"<br/>]</pre> | no |
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | The ARN of the KMS key to encrypt database and backups. Your account's default KMS key will be used if not specified. | `string` | `null` | no |
 | <a name="input_opensearch_name"></a> [opensearch\_name](#input\_opensearch\_name) | The OpenSearch domain name. | `string` | `"openmetadata"` | no |
 | <a name="input_principal_domain"></a> [principal\_domain](#input\_principal\_domain) | The domain name of the users. For example, `open-metadata.org`. | `string` | `"open-metadata.org"` | no |
 | <a name="input_region"></a> [region](#input\_region) | AWS region name, for example:`us-east-2`. | `string` | n/a | yes |
-| <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | The name of S3 bucket for storing the Argo Workflows logs and OpenMetadata assets. | `string` | `null` | no |
+| <a name="input_s3_bucket_name"></a> [s3\_bucket\_name](#input\_s3\_bucket\_name) | The name of S3 bucket for storing the Argo Workflows logs and OpenMetadata assets. If not specified, a random name will be generated with the `openmetadata-` prefix. | `string` | `null` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | List of subnets IDs where the databases and OpenSearch will be deployed. The recommended configuration is to use private subnets. | `list(string)` | `[]` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | VPC ID to deploy the databases and OpenSearch. For example: `vpc-xxxxxxxx`. | `string` | n/a | yes |
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_access_openmetadata"></a> [access\_openmetadata](#output\_access\_openmetadata) | n/a |
