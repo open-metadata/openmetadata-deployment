@@ -191,7 +191,7 @@ variable "argowf_db_major_version" {
 variable "argowf_db_storage" {
   type        = string
   description = "Argo Workflows database storage size."
-  default     = 10
+  default     = 20
 }
 
 variable "argowf_db_storage_type" {
