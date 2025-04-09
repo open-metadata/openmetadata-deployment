@@ -1,6 +1,5 @@
 resource "helm_release" "hybrid_runner" {
   name  = "hybrid-ingestion-runner"
-  #chart = "/home/andres/projects/collate/hybrid-ingestion-agent-helm-chart/charts/hybrid-ingestion-runner"
   repository = "https://open-metadata.github.io/hybrid-ingestion-runner-helm-chart"
   chart      = "hybrid-ingestion-runner"
   version   = var.release_version
