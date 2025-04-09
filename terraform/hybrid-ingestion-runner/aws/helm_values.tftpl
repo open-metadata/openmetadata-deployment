@@ -1,0 +1,49 @@
+%{~ if docker_image_repository != null && docker_image_tag != null ~}
+image:
+  %{~ if docker_image_repository != null ~}
+  repository: ${docker_image_repository}
+  %{~ endif ~}
+  %{~ if docker_image_tag != null ~}
+  tag: ${docker_image_tag}
+  %{~ endif ~}
+%{~ endif ~}
+
+imagePullSecrets:
+  - name: omd-registry-credentials
+
+config:
+  %{~ if agent_id != null ~}
+  agentId: ${agent_id}
+  %{~ endif ~}
+  authToken: ${collate_auth_token}
+  serverUrl: ${collate_server_url}
+  %{~ if ingestion != null ~} 
+  ingestionPods:
+    %{~ if ingestion.image != null ~}
+    %{~ if ingestion.image.repository != null && ingestion.image.tag != null ~}
+    baseImage: "${ingestion.image.repository}:${ingestion.image.tag}"
+    %{~ endif ~}
+    %{~ endif ~}
+    %{~ if ingestion.extra_envs != null ~}
+    extraEnvs: ${ingestion.extra_envs}
+    %{~ endif ~}
+
+    %{~ if ingestion.pod_annotations != null ~}
+    serviceAccount:
+      annotations: 
+        %{~ for key, value in ingestion.pod_annotations ~}
+        "${key}": "${value}"
+        %{~ endfor ~}
+    %{~ endif ~}
+  %{~ endif ~}
+  argoWorkflows:
+    %{~ if argowf.provisioner == "helm" ~}
+    endpoint: "http://argo-workflows-server.${argowf.namespace}.svc:2746"
+    %{~ else ~}
+    %{~ if argowf.provisioner == "existing" ~}
+    endpoint: ${argowf.endpoint}
+    %{~ endif ~}
+    %{~ endif ~}
+# Service monitor for Prometheus metrics
+serviceMonitor:
+  enabled: ${service_monitor_enabled}
