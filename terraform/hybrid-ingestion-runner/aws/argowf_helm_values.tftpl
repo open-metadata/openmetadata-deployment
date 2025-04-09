@@ -1,0 +1,47 @@
+fullnameOverride: "argo-workflows"
+%{ if ! argowf.crd_enabled ~}
+crds:
+  install: false
+%{ endif ~}
+
+controller:
+  serviceAccount:
+    create: true
+    name: ${controller_sa_name}
+    annotations:
+      eks.amazonaws.com/role-arn: ${ controller_iam_arn }
+  persistence:
+    archive: true
+    postgresql:
+      host: ${ db_host }
+      database: ${ db_name }
+      tableName: argo_workflows
+      userNameSecret:
+        name: ${ db_credentials_secret }
+        key: username
+      passwordSecret:
+        name: ${ db_credentials_secret }
+        key: password
+      ssl: true
+      sslMode: require
+server:
+  serviceAccount:
+    create: true
+    name: ${server_sa_name}
+    annotations:
+      eks.amazonaws.com/role-arn: ${ server_iam_arn }
+  
+  extraArgs: 
+    - "--auth-mode=client"
+    - "--request-timeout=5m"
+artifactRepository:
+    archiveLogs: true
+    s3:
+      endpoint: s3.amazonaws.com
+      bucket: ${s3_bucket_name}
+      keyFormat: workflows/{{workflow.namespace}}/{{workflow.name}}/{{pod.name}}
+      insecure: false
+      region: ${region}
+      encryptionOptions:
+          enableEncryption: true
+useStaticCredentials: false
