@@ -32,7 +32,7 @@ resource "kubernetes_manifest" "ecr_registry_helper_cronjob" {
       namespace = kubernetes_namespace.app.id
     }
     spec = {
-      schedule                   = "* */6 * * *"
+      schedule                   = "0 */6 * * *"
       startingDeadlineSeconds    = 10
       successfulJobsHistoryLimit = 2
       suspend                    = false
