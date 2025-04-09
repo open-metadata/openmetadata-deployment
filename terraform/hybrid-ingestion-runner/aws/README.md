@@ -73,4 +73,4 @@ Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
 
 ### S3 bucket
 
-- `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `namespace-` prefix.
+- `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.

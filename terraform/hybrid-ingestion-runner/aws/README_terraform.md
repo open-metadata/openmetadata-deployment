@@ -72,6 +72,4 @@
 
 ## Outputs
 
-| Name | Description |
-|------|-------------|
-| <a name="output_argowf"></a> [argowf](#output\_argowf) | n/a |
+No outputs.
