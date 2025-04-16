@@ -22,11 +22,11 @@ resource "helm_release" "argowf" {
   values = [
     templatefile("${path.module}/argowf_helm_values.tftpl",
       {
-        region                = var.region
-        db_host               = module.rds_argo_workflows["this"].db_instance_endpoint
-        controller_iam_arn    = module.irsa_role_argowf_controller["this"].iam_role_arn
-        server_iam_arn        = module.irsa_role_argowf_server["this"].iam_role_arn
-        argowf                = local.argowf
+        region             = var.region
+        db_host            = module.rds_argo_workflows["this"].db_instance_endpoint
+        controller_iam_arn = module.irsa_role_argowf_controller["this"].iam_role_arn
+        server_iam_arn     = module.irsa_role_argowf_server["this"].iam_role_arn
+        argowf             = local.argowf
     })
   ]
 }

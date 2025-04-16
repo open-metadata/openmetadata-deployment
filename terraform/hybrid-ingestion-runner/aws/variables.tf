@@ -52,9 +52,9 @@ variable "collate_auth_token" {
   description = "The token used to authenticate with the Collate server."
 }
 
-variable "collate_server_url" {
+variable "collate_server_domain" {
   type        = string
-  description = "The URL of the Collate server."
+  description = "The domain of the Collate server. ie: bigcorp.getcollate.io"
 }
 
 variable "service_monitor_enabled" {
@@ -117,8 +117,9 @@ variable "ingestion" {
       repository = optional(string) # Docker image repository
       tag        = optional(string) # Docker image tag
     }))
-    extra_envs      = optional(string)      # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`
-    pod_annotations = optional(map(string)) # Annotations for the pods
+    extra_envs         = optional(string)       # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`
+    pod_annotations    = optional(map(string))  # Annotations for the pods
+    extra_policies_arn = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role
   })
   default = null
 }
