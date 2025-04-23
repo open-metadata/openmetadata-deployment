@@ -1,7 +1,3 @@
-#locals {
-#  default_bucket_name = "${var.namespace}-${random_string.s3_bucket_suffix.result}"
-#}
-
 # The random_string resource is used to generate a random suffix for the bucket name if the s3_bucket_name variable is not provided.
 resource "random_string" "s3_bucket_suffix" {
   length  = 8

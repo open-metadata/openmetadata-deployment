@@ -1,4 +1,4 @@
-%{~ if docker_image_repository != null && docker_image_tag != null ~}
+%{~ if docker_image_repository != null || docker_image_tag != null ~}
 image:
   %{~ if docker_image_repository != null ~}
   repository: ${docker_image_repository}
@@ -16,9 +16,11 @@ config:
   agentId: ${agent_id}
   %{~ endif ~}
   authToken: ${collate_auth_token}
-  serverUrl: ${collate_server_url}
-  %{~ if ingestion != null ~} 
+  serverHostApiUrl: "https://${collate_server_domain}/api"
+  serverUrl: "wss://${collate_server_domain}"
+  secretsManager: "managed-aws"
   ingestionPods:
+  %{~ if ingestion != null ~} 
     %{~ if ingestion.image != null ~}
     %{~ if ingestion.image.repository != null && ingestion.image.tag != null ~}
     baseImage: "${ingestion.image.repository}:${ingestion.image.tag}"
@@ -27,15 +29,18 @@ config:
     %{~ if ingestion.extra_envs != null ~}
     extraEnvs: ${ingestion.extra_envs}
     %{~ endif ~}
-
-    %{~ if ingestion.pod_annotations != null ~}
+  %{~ endif ~}
     serviceAccount:
-      annotations: 
+      annotations:
+        "iam.amazonaws.com/role": "${ingestion_role_arn}"
+      %{~ if ingestion != null ~}	
+      %{~ if ingestion.pod_annotations != null ~}	
         %{~ for key, value in ingestion.pod_annotations ~}
         "${key}": "${value}"
         %{~ endfor ~}
-    %{~ endif ~}
-  %{~ endif ~}
+      %{~ endif ~}
+      %{~ endif ~}
+      automount: true
   argoWorkflows:
     %{~ if argowf.provisioner == "helm" ~}
     endpoint: "http://argo-workflows-server.${argowf.namespace}.svc:2746"
