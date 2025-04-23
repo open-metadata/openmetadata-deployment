@@ -10,7 +10,7 @@
 
 ## Usage
 
-Create a file named `terraform.tfvars` with the mandatory variables, you can use this as an example:
+Create a file named `terraform.tfvars` with the mandatory variables, you can use this as an example updating the values:
 
 ```hcl
 # EKS cluster name
@@ -18,9 +18,9 @@ eks_cluster     = "eks-cluster"
 # AWS region
 region          = "eu-west-1"
 
-# Collate authentication
+# Collate server authentication
 collate_auth_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
-collate_server_url = "wss://my-company.getcollate.io"
+collate_server_domain = "my-company.getcollate.io"
 
 # Argo Workflows settings
 argowf = {
@@ -74,3 +74,18 @@ Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
 ### S3 bucket
 
 - `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.
+
+## Ingestion Pods
+
+### Attach additional IAM policies to the ingestion pods
+
+The ingestion pods run using the IAM role named `ingestion-pods-<AWS region>` by default. This role is created by this Terraform project and is attached to the ingestion pods. If you want to attach additional policies you can use the variable `ingestion.extra_policies_arn`, please check the following example:
+
+```hcl
+ingestion = {
+  extra_policies_arn = [
+    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+    "arn:aws:iam::aws:policy/service-role/AWSGlueConsoleFullAccess"
+  ]
+}
+```
