@@ -65,7 +65,7 @@ variable "service_monitor_enabled" {
 
 variable "secrets_manager_path" {
   type        = string
-  description = "The AWW Secret Manager path that the Ingestion Pods will be allowed to read from."
+  description = "The AWS Secrets Manager path that the Ingestion Pods will be allowed to read from."
   default     = "/collate/hybrid-ingestion-runner"
 }
 
