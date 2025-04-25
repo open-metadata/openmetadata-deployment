@@ -1,7 +1,7 @@
 # Helper to refresh Collate Docker image credentials
 
 locals {
-  docker_registry = "https://118146679784.dkr.ecr.us-east-2.amazonaws.com"
+  docker_registry = "https://118146679784.dkr.ecr.eu-west-1.amazonaws.com"
   registry_helper_manifest = yamldecode(<<-EOF
   serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
   containers:
@@ -89,7 +89,7 @@ resource "kubernetes_config_map" "ecr_registry_helper_config" {
   }
 
   data = {
-    AWS_REGION         = "us-east-2"
+    AWS_REGION         = "eu-west-1"
     DOCKER_SECRET_NAME = "omd-registry-credentials"
     NAMESPACE_NAME     = kubernetes_namespace.hybrid_runner.id
   }
