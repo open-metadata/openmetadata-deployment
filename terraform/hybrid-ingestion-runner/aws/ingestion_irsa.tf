@@ -1,7 +1,7 @@
 locals {
   # https://github.com/open-metadata/hybrid-ingestion-runner-helm-chart/blob/main/charts/hybrid-ingestion-runner/values.yaml#L34
   ingestion_sa_name      = "ingestion"
-  secrets_manager_region = var.allow_secrets_manager_from_all_regions ? "*" : var.region
+  secrets_manager_region = var.region
 }
 
 data "aws_iam_policy_document" "ingestion_pods" {
