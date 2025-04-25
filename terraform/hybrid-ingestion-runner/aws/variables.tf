@@ -69,12 +69,6 @@ variable "secrets_manager_path" {
   default     = "/collate/hybrid-ingestion-runner"
 }
 
-variable "allow_secrets_manager_from_all_regions" {
-  type        = bool
-  description = "When true, allows the Ingestion Pods to read the selected path from AWS Secrets Manager in all regions. When false, only the region where the Hybrid Ingestion Runner runs is allowed."
-  default     = false
-}
-
 # ECR Creds 
 variable "ECR_ACCESS_KEY" {
   type        = string
@@ -126,8 +120,9 @@ variable "ingestion" {
   description = "Ingestiopn pods settings"
   type = object({
     image = optional(object({
-      repository = optional(string) # Docker image repository
-      tag        = optional(string) # Docker image tag
+      repository   = optional(string) # Docker image repository
+      tag          = optional(string) # Docker image tag
+      pull_secrets = optional(string) # Docker image pull secret
     }))
     extra_envs         = optional(string)       # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`
     pod_annotations    = optional(map(string))  # Annotations for the pods
