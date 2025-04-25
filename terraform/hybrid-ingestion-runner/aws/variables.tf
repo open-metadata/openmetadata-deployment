@@ -63,6 +63,18 @@ variable "service_monitor_enabled" {
   default     = false
 }
 
+variable "secrets_manager_path" {
+  type        = string
+  description = "The AWS Secrets Manager path that the Ingestion Pods will be allowed to read from."
+  default     = "/collate/hybrid-ingestion-runner"
+}
+
+variable "allow_secrets_manager_from_all_regions" {
+  type        = bool
+  description = "When true, allows the Ingestion Pods to read the selected path from AWS Secrets Manager in all regions. When false, only the region where the Hybrid Ingestion Runner runs is allowed."
+  default     = false
+}
+
 # ECR Creds 
 variable "ECR_ACCESS_KEY" {
   type        = string

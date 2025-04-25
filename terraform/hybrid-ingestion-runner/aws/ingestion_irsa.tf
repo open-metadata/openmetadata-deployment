@@ -1,6 +1,7 @@
 locals {
   # https://github.com/open-metadata/hybrid-ingestion-runner-helm-chart/blob/main/charts/hybrid-ingestion-runner/values.yaml#L34
-  ingestion_sa_name = "ingestion"
+  ingestion_sa_name      = "ingestion"
+  secrets_manager_region = var.allow_secrets_manager_from_all_regions ? "*" : var.region
 }
 
 data "aws_iam_policy_document" "ingestion_pods" {
@@ -21,6 +22,17 @@ data "aws_iam_policy_document" "ingestion_pods" {
 
     resources = ["${module.s3_bucket.s3_bucket_arn}/workflows/*"]
   }
+  statement {
+    sid = "SecretsManager"
+    actions = [
+      "secretsmanager:GetSecretValue",
+      "secretsmanager:DescribeSecret",
+      "secretsmanager:ListSecrets"
+    ]
+
+    resources = ["arn:aws:secretsmanager:${local.secrets_manager_region}:${data.aws_caller_identity.current.account_id}:secret:${var.secrets_manager_path}/*"]
+  }
+
 }
 
 resource "aws_iam_policy" "ingestion_pods" {

@@ -32,7 +32,7 @@ config:
   %{~ endif ~}
     serviceAccount:
       annotations:
-        "iam.amazonaws.com/role": "${ingestion_role_arn}"
+        "eks.amazonaws.com/role-arn": "${ingestion_role_arn}"
       %{~ if ingestion != null ~}	
       %{~ if ingestion.pod_annotations != null ~}	
         %{~ for key, value in ingestion.pod_annotations ~}

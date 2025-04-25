@@ -10,7 +10,7 @@
 
 ## Usage
 
-Create a file named `terraform.tfvars` with the mandatory variables, you can use this as an example:
+Create a file named `terraform.tfvars` with the mandatory variables, you can use this as an example updating the values:
 
 ```hcl
 # EKS cluster name
@@ -18,9 +18,9 @@ eks_cluster     = "eks-cluster"
 # AWS region
 region          = "eu-west-1"
 
-# Collate authentication
+# Collate server authentication
 collate_auth_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
-collate_server_url = "wss://my-company.getcollate.io"
+collate_server_domain = "my-company.getcollate.io"
 
 # Argo Workflows settings
 argowf = {
@@ -74,3 +74,35 @@ Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
 ### S3 bucket
 
 - `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.
+
+## Ingestion Pods
+
+### Access to Your AWS Secrets Manager in the Same AWS Account
+
+The ingestion pods require access to AWS Secrets Manager to retrieve the credentials needed to connect to your resources. The path to the Secrets Manager that will be allowed is defined by the variable `secrets_manager_path`, which defaults to `/collate/hybrid-ingestion-runner`. You can modify this value if you'd like to use a different path.
+
+This Terraform project supports two scenarios:  
+1. The ingestion pods accessing Secrets Manager in the **same AWS Region** where the Hybrid Ingestion Runner is deployed.  
+2. The ingestion pods accessing Secrets Manager across **all AWS Regions**.
+
+#### **Scenario 1: Secrets Manager in the Same AWS Region**
+
+This is the default behavior. The ingestion pods will access AWS Secrets Manager in the same AWS Region as the Hybrid Ingestion Runner.  
+In this case, the variable `allow_secrets_manager_from_all_regions` must be set to `false` (which is the default value).
+
+#### **Scenario 2: Secrets Manager in All AWS Regions**
+
+If you want the ingestion pods to access AWS Secrets Manager in **all** AWS Regions, set the variable `allow_secrets_manager_from_all_regions` to `true`.
+
+### Attach additional IAM policies to the ingestion pods
+
+The ingestion pods run using the IAM role named `ingestion-pods-<AWS region>` by default. This role is created by this Terraform project and is attached to the ingestion pods. If you want to attach additional policies you can use the variable `ingestion.extra_policies_arn`, please check the following example:
+
+```hcl
+ingestion = {
+  extra_policies_arn = [
+    "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole",
+    "arn:aws:iam::aws:policy/service-role/AWSGlueConsoleFullAccess"
+  ]
+}
+```
