@@ -1,4 +1,4 @@
-fullnameOverride: "argo-workflows"
+fullnameOverride: ${ fullname_override }
 %{ if ! argowf.crd_enabled ~}
 crds:
   install: false

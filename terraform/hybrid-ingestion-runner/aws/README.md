@@ -18,6 +18,9 @@ eks_cluster     = "eks-cluster"
 # AWS region
 region          = "eu-west-1"
 
+# Environment name. Must be unique in the AWS Region
+environment     = "sandbox"
+
 # Collate server authentication
 collate_auth_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
 collate_server_domain = "my-company.getcollate.io"

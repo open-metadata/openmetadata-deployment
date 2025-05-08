@@ -7,18 +7,18 @@ locals {
 
   argowf_defaults = {
     helm_chart_version = "0.40.8"
-    namespace          = "argo-workflows"
+    namespace          = "argo-workflows-${var.environment}"
     controller_sa_name = "argo-workflows-controller"
     server_sa_name     = "argo-workflows-server"
-    s3_bucket_name     = "argo-workflows-${random_string.s3_bucket_suffix.result}"
+    s3_bucket_name     = "argo-workflows-${var.environment}-${random_string.s3_bucket_suffix.result}"
     crd_enabled        = true
     db = {
       apply_immediately       = true
       instance_class          = "db.t4g.micro"
-      instance_name           = "argowf"
+      instance_name           = "argowf-${var.environment}"
       name                    = "argowf"
       user                    = "dbadmin"
-      credentials_secret      = "argowf-db"
+      credentials_secret      = "argowf-db-${var.environment}"
       major_version           = "17"
       storage                 = 20
       storage_type            = "gp3"

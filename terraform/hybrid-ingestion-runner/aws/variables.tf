@@ -26,7 +26,13 @@ variable "release_version" {
 variable "namespace" {
   type        = string
   default     = "collate-hybrid-ingestion-runner"
-  description = "The application's namespace."
+  description = "The application's namespace prefix. Note that `var.environment` will be appended to this value."
+}
+
+variable "environment" {
+  type        = string
+  description = "The environment name where the resources will be deployed. Must be unique within the AWS Region."
+  default     = "prod"
 }
 
 variable "docker_image_repository" {
