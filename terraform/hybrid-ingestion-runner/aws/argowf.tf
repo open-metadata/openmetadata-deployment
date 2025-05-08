@@ -14,7 +14,7 @@ resource "kubernetes_namespace" "argowf" {
 resource "helm_release" "argowf" {
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
-  name       = "argowf"
+  name       = "argowf-${var.environment}"
   namespace  = kubernetes_namespace.argowf["this"].metadata[0].name
   chart      = "argo-workflows"
   version    = local.argowf.helm_chart_version
@@ -22,6 +22,7 @@ resource "helm_release" "argowf" {
   values = [
     templatefile("${path.module}/argowf_helm_values.tftpl",
       {
+        fullname_override  = "argo-workflows-${var.environment}"
         region             = var.region
         db_host            = module.rds_argo_workflows["this"].db_instance_endpoint
         controller_iam_arn = module.irsa_role_argowf_controller["this"].iam_role_arn

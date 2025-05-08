@@ -36,7 +36,7 @@ data "aws_iam_policy_document" "ingestion_pods" {
 }
 
 resource "aws_iam_policy" "ingestion_pods" {
-  name   = "ingestion-pods-${var.region}"
+  name   = "ingestion-pods-${var.region}-${var.environment}"
   policy = data.aws_iam_policy_document.ingestion_pods.json
 }
 
@@ -44,7 +44,7 @@ module "ingestion_pods_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.55"
 
-  role_name = "ingestion-pods-${var.region}"
+  role_name = "ingestion-pods-${var.region}-${var.environment}"
   role_policy_arns = {
     s3rw = aws_iam_policy.ingestion_pods.arn
   }

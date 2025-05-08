@@ -1,9 +1,13 @@
+locals {
+  namespace = "${var.namespace}-${var.environment}"
+}
+
 resource "helm_release" "hybrid_runner" {
   name       = "hybrid-ingestion-runner"
   repository = "https://open-metadata.github.io/hybrid-ingestion-runner-helm-chart"
   chart      = "hybrid-ingestion-runner"
   version    = var.release_version
-  namespace  = var.namespace
+  namespace  = local.namespace
   wait       = false
   values = [
     templatefile("${path.module}/helm_values.tftpl",
