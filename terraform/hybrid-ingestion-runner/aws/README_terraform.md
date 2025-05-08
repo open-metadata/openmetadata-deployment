@@ -70,7 +70,7 @@
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | The ARN of the KMS key to encrypt database and backups. Your account's default KMS key will be used if not specified. | `string` | `null` | no |
 | <a name="input_namespace"></a> [namespace](#input\_namespace) | The application's namespace. | `string` | `"collate-hybrid-ingestion-runner"` | no |
 | <a name="input_region"></a> [region](#input\_region) | The region where the resources will be deployed. | `string` | `"eu-west-1"` | no |
-| <a name="input_release_version"></a> [release\_version](#input\_release\_version) | The Hybrid Ingestion Runner version to deploy. | `string` | `"0.0.1"` | no |
+| <a name="input_release_version"></a> [release\_version](#input\_release\_version) | The Hybrid Ingestion Runner version to deploy. | `string` | `"1.6.10"` | no |
 | <a name="input_runner_id"></a> [runner\_id](#input\_runner\_id) | Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI. | `string` | `null` | no |
 | <a name="input_secrets_manager_path"></a> [secrets\_manager\_path](#input\_secrets\_manager\_path) | The AWS Secrets Manager path that the Ingestion Pods will be allowed to read from. | `string` | `"/collate/hybrid-ingestion-runner"` | no |
 | <a name="input_service_monitor_enabled"></a> [service\_monitor\_enabled](#input\_service\_monitor\_enabled) | Enable service monitor for Prometheus metrics. | `bool` | `false` | no |

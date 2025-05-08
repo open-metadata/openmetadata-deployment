@@ -23,7 +23,7 @@ data "aws_iam_policy_document" "argowf_server" {
 resource "aws_iam_policy" "argowf_server" {
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
-  name   = "argowf-server-${var.region}"
+  name   = "${var.argowf.namespace}-argowf-server-${var.region}"
   policy = data.aws_iam_policy_document.argowf_server["this"].json
 }
 
@@ -33,7 +33,7 @@ module "irsa_role_argowf_server" {
 
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
-  role_name        = "argowf-server-${var.region}"
+  role_name        = "${var.argowf.namespace}-argowf-server-${var.region}"
   role_policy_arns = { "S3RO" = aws_iam_policy.argowf_server["this"].arn }
 
   oidc_providers = {
@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "argowf_controller" {
 resource "aws_iam_policy" "argowf_controller" {
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
-  name   = "argowf-controller-${var.region}"
+  name   = "${var.argowf.namespace}-argowf-controller-${var.region}"
   policy = data.aws_iam_policy_document.argowf_controller["this"].json
 }
 
@@ -91,7 +91,7 @@ module "irsa_role_argowf_controller" {
 
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
-  role_name = "argowf-controller-${var.region}"
+  role_name = "${var.argowf.namespace}-argowf-controller-${var.region}"
   role_policy_arns = {
     s3rw = aws_iam_policy.argowf_controller["this"].arn
   }
