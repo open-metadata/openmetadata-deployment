@@ -32,6 +32,7 @@ variable "namespace" {
 variable "environment" {
   type        = string
   description = "The environment name where the resources will be deployed. Must be unique within the AWS Region."
+  default     = "prod"
 }
 
 variable "docker_image_repository" {
