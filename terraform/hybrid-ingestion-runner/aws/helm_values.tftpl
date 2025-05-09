@@ -52,7 +52,7 @@ config:
       automount: true
   argoWorkflows:
     %{~ if argowf.provisioner == "helm" ~}
-    endpoint: "http://argo-workflows-server.${argowf.namespace}.svc:2746"
+    endpoint: "http://argo-workflows-${environment}-server.${argowf.namespace}.svc:2746"
     %{~ else ~}
     %{~ if argowf.provisioner == "existing" ~}
     endpoint: ${argowf.endpoint}

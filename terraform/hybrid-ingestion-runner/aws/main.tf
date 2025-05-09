@@ -12,6 +12,7 @@ resource "helm_release" "hybrid_runner" {
   values = [
     templatefile("${path.module}/helm_values.tftpl",
       {
+        environment              = var.environment
         docker_image_repository  = var.docker_image_repository
         docker_image_tag         = var.docker_image_tag
         docker_image_pull_secret = var.docker_image_pull_secret
