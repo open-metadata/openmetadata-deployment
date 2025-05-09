@@ -47,6 +47,12 @@ variable "docker_image_tag" {
   default     = null
 }
 
+variable "docker_image_pull_secret" {
+  type        = string
+  description = "The Docker image pull secret for the Hybrid Ingestion Runner."
+  default     = null
+}
+
 variable "runner_id" {
   type        = string
   description = "Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI."
