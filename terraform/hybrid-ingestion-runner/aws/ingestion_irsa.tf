@@ -52,7 +52,7 @@ module "ingestion_pods_irsa" {
   oidc_providers = {
     ex = {
       provider_arn               = data.aws_iam_openid_connect_provider.oidc.arn
-      namespace_service_accounts = ["${var.namespace}:${local.ingestion_sa_name}"]
+      namespace_service_accounts = ["${local.namespace}:${local.ingestion_sa_name}"]
     }
   }
 }
