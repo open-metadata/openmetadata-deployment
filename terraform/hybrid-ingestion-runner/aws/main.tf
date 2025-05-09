@@ -26,4 +26,7 @@ resource "helm_release" "hybrid_runner" {
       }
     )
   ]
+  depends_on = [
+    kubernetes_namespace.hybrid_runner
+  ]
 }
