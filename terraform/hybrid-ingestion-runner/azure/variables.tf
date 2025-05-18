@@ -1,0 +1,135 @@
+variable "aks_resource_group_name" {
+  type        = string
+  description = "Name of the resource group containing the AKS cluster."
+}
+
+variable "aks_cluster_name" {
+  type        = string
+  description = "Name of the existing AKS cluster."
+}
+
+variable "subscription_id" {
+  type        = string
+  default     = null
+  description = "Azure subscription ID (optional)."
+}
+
+variable "tenant_id" {
+  type        = string
+  default     = null
+  description = "Azure AD tenant ID (optional)."
+}
+
+variable "location" {
+  type        = string
+  default     = "westeurope"
+  description = "Azure region where the resources will be deployed."
+}
+
+variable "release_version" {
+  type        = string
+  description = "The Hybrid Ingestion Runner version to deploy."
+  default     = "1.7.0"
+}
+
+variable "namespace" {
+  type        = string
+  default     = "collate-hybrid-ingestion-runner"
+  description = "The application's namespace prefix. Note that `var.environment` will be appended to this value."
+}
+
+variable "environment" {
+  type        = string
+  description = "The environment name where the resources will be deployed."
+  default     = "prod"
+}
+
+variable "docker_image_repository" {
+  type        = string
+  description = "The Docker image repository for the Hybrid Ingestion Runner."
+  default     = null
+}
+
+variable "docker_image_tag" {
+  type        = string
+  description = "The Docker image tag for the Hybrid Ingestion Runner."
+  default     = null
+}
+
+variable "docker_image_pull_secret" {
+  type        = string
+  description = "The Docker image pull secret for the Hybrid Ingestion Runner."
+  default     = null
+}
+
+variable "runner_id" {
+  type        = string
+  description = "Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI."
+  default     = null
+}
+
+variable "collate_auth_token" {
+  type        = string
+  description = "The token used to authenticate with the Collate server."
+}
+
+variable "collate_server_domain" {
+  type        = string
+  description = "The domain of the Collate server. ie: bigcorp.getcollate.io"
+}
+
+variable "service_monitor_enabled" {
+  type        = bool
+  description = "Enable service monitor for Prometheus metrics."
+  default     = false
+}
+
+variable "ECR_ACCESS_KEY" {
+  type        = string
+  description = "The Access key shared by Collate to pull Docker images from ECR."
+}
+
+variable "ECR_SECRET_KEY" {
+  type        = string
+  description = "The Secret Key shared by Collate to pull Docker images from ECR."
+}
+
+variable "argowf" {
+  description = "Argo Workflows configuration."
+  type = object({
+    provisioner            = optional(string)
+    endpoint               = optional(string)
+    helm_chart_version     = optional(string)
+    namespace              = optional(string)
+    controller_sa_name     = optional(string)
+    server_sa_name         = optional(string)
+    storage_account_name   = optional(string)
+    storage_container_name = optional(string)
+    crd_enabled            = optional(bool)
+    db = optional(object({
+      apply_immediately     = optional(bool)
+      sku_name              = optional(string)
+      version               = optional(string)
+      administrator_login   = optional(string)
+      credentials_secret    = optional(string)
+      storage_mb            = optional(number)
+      backup_retention_days = optional(number)
+      geo_redundant_backup  = optional(bool)
+      auto_grow_enabled     = optional(bool)
+    }))
+  })
+}
+
+variable "ingestion" {
+  description = "Ingestion pods settings"
+  type = object({
+    image = optional(object({
+      repository   = optional(string)
+      tag          = optional(string)
+      pull_secrets = optional(string)
+    }))
+    extra_envs      = optional(string)
+    pod_annotations = optional(map(string))
+  })
+  default = null
+}
