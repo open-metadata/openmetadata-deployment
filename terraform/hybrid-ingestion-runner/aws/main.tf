@@ -1,5 +1,6 @@
 locals {
-  namespace = "${var.namespace}-${var.environment}"
+  namespace          = "${var.namespace}-${var.environment}"
+  ingestion_role_arn = var.ingestion_identity_mode == "irsa" ? module.ingestion_pods_irsa["this"].iam_role_arn : aws_iam_role.ingestion_pods_pod_identity[0].arn
 }
 
 resource "helm_release" "hybrid_runner" {
@@ -21,7 +22,8 @@ resource "helm_release" "hybrid_runner" {
         collate_server_domain    = var.collate_server_domain
         service_monitor_enabled  = var.service_monitor_enabled
         ingestion                = var.ingestion
-        ingestion_role_arn       = module.ingestion_pods_irsa.iam_role_arn
+        ingestion_role_arn       = local.ingestion_role_arn
+        identity_mode            = var.ingestion_identity_mode
         argowf                   = local.argowf
       }
     )

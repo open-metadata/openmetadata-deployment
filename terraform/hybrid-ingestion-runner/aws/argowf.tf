@@ -1,5 +1,10 @@
 # Argo Workflows resources
 
+locals {
+  argowf_controller_role_arn = var.argowf_identity_mode == "irsa" ? module.irsa_role_argowf_controller["this"].iam_role_arn : aws_iam_role.argowf_controller_pod_identity[0].arn
+  argowf_server_role_arn     = var.argowf_identity_mode == "irsa" ? module.irsa_role_argowf_server["this"].iam_role_arn : aws_iam_role.argowf_server_pod_identity[0].arn
+}
+
 resource "kubernetes_namespace" "argowf" {
   for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
 
@@ -25,8 +30,9 @@ resource "helm_release" "argowf" {
         fullname_override  = "argo-workflows-${var.environment}"
         region             = var.region
         db_host            = module.rds_argo_workflows["this"].db_instance_endpoint
-        controller_iam_arn = module.irsa_role_argowf_controller["this"].iam_role_arn
-        server_iam_arn     = module.irsa_role_argowf_server["this"].iam_role_arn
+        controller_iam_arn = local.argowf_controller_role_arn
+        server_iam_arn     = local.argowf_server_role_arn
+        identity_mode      = var.argowf_identity_mode
         argowf             = local.argowf
     })
   ]

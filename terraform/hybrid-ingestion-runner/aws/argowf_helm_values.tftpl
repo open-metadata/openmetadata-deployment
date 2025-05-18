@@ -9,7 +9,11 @@ controller:
     create: true
     name: ${argowf.controller_sa_name}
     annotations:
+%{ if identity_mode == "irsa" ~}
       eks.amazonaws.com/role-arn: ${ controller_iam_arn }
+%{ else if identity_mode == "pod_identity" ~}
+      iam.amazonaws.com/role: ${ controller_iam_arn }
+%{ endif ~}
   persistence:
     archive: true
     postgresql:
@@ -29,7 +33,11 @@ server:
     create: true
     name: ${argowf.server_sa_name}
     annotations:
+%{ if identity_mode == "irsa" ~}
       eks.amazonaws.com/role-arn: ${ server_iam_arn }
+%{ else if identity_mode == "pod_identity" ~}
+      iam.amazonaws.com/role: ${ server_iam_arn }
+%{ endif ~}
   
   extraArgs: 
     - "--auth-mode=client"

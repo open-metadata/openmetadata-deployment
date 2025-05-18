@@ -78,6 +78,15 @@ Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
 
 - `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.
 
+### Identity mode for Argo Workflows pods
+
+The Argo Workflows components (controller & server) require an IAM role to access AWS resources, such as S3 logs and the database. You can choose between AWS IAM Roles for Service Accounts (IRSA) or Pod Identity (such as kube2iam). Set the variable `argowf_identity_mode` to either `"irsa"` (default) or `"pod_identity"`.
+
+- `"irsa"`: Uses the EKS OIDC provider to assign the IAM role to the Kubernetes service account.
+- `"pod_identity"`: Uses a pod identity solution (e.g., kube2iam) to assign the IAM role to pods via annotation.
+
+Ensure that if using Pod Identity, your cluster has the necessary Pod Identity components installed and configured.
+
 ## Ingestion Pods
 
 ### Access to the AWS Secrets Manager
@@ -98,3 +107,12 @@ ingestion = {
   ]
 }
 ```
+
+### Identity mode for the ingestion pods
+
+The ingestion pods require an IAM role to access AWS resources. You can choose between AWS IAM Roles for Service Accounts (IRSA) or Pod Identity (such as kube2iam). Set the variable `ingestion_identity_mode` to either `"irsa"` (default) or `"pod_identity"`.
+
+- `"irsa"`: Uses the EKS OIDC provider to assign the IAM role to the Kubernetes service account.
+- `"pod_identity"`: Uses a pod identity solution (e.g., kube2iam) to assign the IAM role to pods via annotation.
+
+Ensure that if using Pod Identity, your cluster has the necessary Pod Identity components installed and configured.

@@ -41,9 +41,13 @@ config:
   %{~ endif ~}
     serviceAccount:
       annotations:
+%{ if identity_mode == "irsa" ~}
         "eks.amazonaws.com/role-arn": "${ingestion_role_arn}"
-      %{~ if ingestion != null ~}	
-      %{~ if ingestion.pod_annotations != null ~}	
+%{ else if identity_mode == "pod_identity" ~}
+        "iam.amazonaws.com/role": "${ingestion_role_arn}"
+%{ endif ~}
+      %{~ if ingestion != null ~}
+      %{~ if ingestion.pod_annotations != null ~}
         %{~ for key, value in ingestion.pod_annotations ~}
         "${key}": "${value}"
         %{~ endfor ~}

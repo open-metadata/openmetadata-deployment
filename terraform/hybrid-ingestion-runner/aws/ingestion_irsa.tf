@@ -2,6 +2,8 @@ locals {
   # https://github.com/open-metadata/hybrid-ingestion-runner-helm-chart/blob/main/charts/hybrid-ingestion-runner/values.yaml#L34
   ingestion_sa_name      = "ingestion"
   secrets_manager_region = var.region
+  create_irsa            = var.ingestion_identity_mode == "irsa"
+  create_pod_identity    = var.ingestion_identity_mode == "pod_identity"
 }
 
 data "aws_iam_policy_document" "ingestion_pods" {
@@ -41,8 +43,9 @@ resource "aws_iam_policy" "ingestion_pods" {
 }
 
 module "ingestion_pods_irsa" {
-  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
-  version = "~> 5.55"
+  source   = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version  = "~> 5.55"
+  for_each = toset(local.create_irsa ? ["this"] : [])
 
   role_name = "ingestion-pods-${var.region}-${var.environment}"
   role_policy_arns = {
@@ -58,8 +61,46 @@ module "ingestion_pods_irsa" {
 }
 
 resource "aws_iam_role_policy_attachment" "ingestion_pods_extra" {
-  for_each = toset(coalesce(try(var.ingestion.extra_policies_arn, null), []))
+  for_each = var.ingestion_identity_mode == "irsa" ? toset(coalesce(try(var.ingestion.extra_policies_arn, null), [])) : {}
 
-  role       = module.ingestion_pods_irsa.iam_role_name
+  role       = module.ingestion_pods_irsa["this"].iam_role_name
   policy_arn = each.value
+}
+
+data "aws_iam_policy_document" "ingestion_pods_pod_identity_assume_role" {
+  count = local.create_pod_identity ? 1 : 0
+
+  statement {
+    actions = ["sts:AssumeRole"]
+    effect  = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "sts:ExternalId"
+      values   = [data.aws_eks_cluster.eks.id]
+    }
+  }
+}
+
+resource "aws_iam_role" "ingestion_pods_pod_identity" {
+  count              = local.create_pod_identity ? 1 : 0
+  name               = "ingestion-pods-${var.region}-${var.environment}"
+  assume_role_policy = data.aws_iam_policy_document.ingestion_pods_pod_identity_assume_role[0].json
+}
+
+resource "aws_iam_role_policy_attachment" "ingestion_pods_pod_identity" {
+  count      = local.create_pod_identity ? 1 : 0
+  role       = aws_iam_role.ingestion_pods_pod_identity[0].name
+  policy_arn = aws_iam_policy.ingestion_pods.arn
+}
+
+resource "aws_iam_role_policy_attachment" "ingestion_pods_extra_pod_identity" {
+  count      = local.create_pod_identity ? length(coalesce(try(var.ingestion.extra_policies_arn, null), [])) : 0
+  role       = aws_iam_role.ingestion_pods_pod_identity[0].name
+  policy_arn = var.ingestion.extra_policies_arn[count.index]
 }

@@ -3,6 +3,17 @@ variable "eks_cluster" {
   description = "Name of the EKS cluster where the resources will be deployed."
 }
 
+variable "ingestion_identity_mode" {
+  type        = string
+  description = "The identity mode for ingestion pods. Options: \"irsa\" or \"pod_identity\"."
+  default     = "irsa"
+
+  validation {
+    condition     = contains(["irsa", "pod_identity"], var.ingestion_identity_mode)
+    error_message = "ingestion_identity_mode must be one of \"irsa\" or \"pod_identity\""
+  }
+}
+
 variable "kms_key_id" {
   type        = string
   description = "The ARN of the KMS key to encrypt database and backups. Your account's default KMS key will be used if not specified."
@@ -126,6 +137,17 @@ variable "argowf" {
       subnet_ids              = optional(list(string)) # List of subnet IDs for the database. Private subnets are recommended
     }))
   })
+}
+
+variable "argowf_identity_mode" {
+  type        = string
+  description = "The identity mode for Argo Workflows pods. Options: \"irsa\" or \"pod_identity\"."
+  default     = "irsa"
+
+  validation {
+    condition     = contains(["irsa", "pod_identity"], var.argowf_identity_mode)
+    error_message = "argowf_identity_mode must be one of \"irsa\" or \"pod_identity\""
+  }
 }
 
 variable "ingestion" {
