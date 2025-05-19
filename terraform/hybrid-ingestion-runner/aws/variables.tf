@@ -53,6 +53,12 @@ variable "docker_image_pull_secret" {
   default     = null
 }
 
+variable "docker_image_pull_policy" {
+  type        = string
+  description = "The Docker image pull policy for the Hybrid Ingestion Runner."
+  default     = "IfNotPresent"
+}
+
 variable "runner_id" {
   type        = string
   description = "Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI."
@@ -140,5 +146,9 @@ variable "ingestion" {
     pod_annotations    = optional(map(string))  # Annotations for the pods
     extra_policies_arn = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role
   })
-  default = null
+  default = {
+    image = {
+      pull_secrets = "omd-registry-credentials"
+    }
+  }
 }
