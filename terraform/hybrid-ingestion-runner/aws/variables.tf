@@ -146,9 +146,5 @@ variable "ingestion" {
     pod_annotations    = optional(map(string))  # Annotations for the pods
     extra_policies_arn = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role
   })
-  default = {
-    image = {
-      pull_secrets = "omd-registry-credentials"
-    }
-  }
+  default = null
 }
