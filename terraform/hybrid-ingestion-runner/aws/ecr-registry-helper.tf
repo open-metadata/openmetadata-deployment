@@ -2,7 +2,7 @@
 
 locals {
   docker_registry = "https://118146679784.dkr.ecr.eu-west-1.amazonaws.com"
-  registry_helper_manifest = yamldecode(<<-EOF
+  registry_helper_manifest = var.ECR_ACCESS_KEY == null ? "" : yamldecode(<<-EOF
   serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
   containers:
     - name: "ecr-registry-helper"
