@@ -27,20 +27,18 @@ config:
   serverUrl: "wss://${collate_server_domain}"
   secretsManager: "managed-aws"
   ingestionPods:
-  %{~ if ingestion != null ~} 
+  %{~ if ingestion != null ~}
     %{~ if ingestion.image != null ~}
     %{~ if ingestion.image.repository != null && ingestion.image.tag != null ~}
     baseImage: "${ingestion.image.repository}:${ingestion.image.tag}"
     %{~ endif ~}
-    %{~ endif ~}
-    %{~ if ingestion.image.pull_secrets != null ~}
-    imagePullSecrets: "${ingestion.image.pull_secrets}"
-    %{~ else ~}
-    imagePullSecrets: omd-registry-credentials
+    imagePullSecrets: "${ingestion.image.pull_secrets != null ? ingestion.image.pull_secrets : "omd-registry-credentials"}"
     %{~ endif ~}
     %{~ if ingestion.extra_envs != null ~}
     extraEnvs: ${ingestion.extra_envs}
     %{~ endif ~}
+  %{~ else ~}
+    imagePullSecrets: omd-registry-credentials
   %{~ endif ~}
     serviceAccount:
       annotations:
