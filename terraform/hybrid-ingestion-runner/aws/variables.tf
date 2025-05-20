@@ -53,6 +53,12 @@ variable "docker_image_pull_secret" {
   default     = null
 }
 
+variable "docker_image_pull_policy" {
+  type        = string
+  description = "The Docker image pull policy for the Hybrid Ingestion Runner."
+  default     = "IfNotPresent"
+}
+
 variable "runner_id" {
   type        = string
   description = "Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI."

@@ -6,6 +6,9 @@ image:
   %{~ if docker_image_tag != null ~}
   tag: ${docker_image_tag}
   %{~ endif ~}
+  %{~ if docker_image_pull_policy != null ~}
+  pullPolicy: ${docker_image_pull_policy}
+  %{~ endif ~}
 %{~ endif ~}
 
 imagePullSecrets:

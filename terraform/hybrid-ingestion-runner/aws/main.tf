@@ -16,6 +16,7 @@ resource "helm_release" "hybrid_runner" {
         docker_image_repository  = var.docker_image_repository
         docker_image_tag         = var.docker_image_tag
         docker_image_pull_secret = var.docker_image_pull_secret
+        docker_image_pull_policy = var.docker_image_pull_policy
         agent_id                 = var.runner_id
         collate_auth_token       = var.collate_auth_token
         collate_server_domain    = var.collate_server_domain
