@@ -1,0 +1,42 @@
+# helm_values.tftpl — runner settings for Azure
+%{~ if docker_image_repository != null || docker_image_tag != null ~}
+image:
+  %{~ if docker_image_repository != null ~}
+  repository: ${docker_image_repository}
+  %{~ endif ~}
+  %{~ if docker_image_tag != null ~}
+  tag: ${docker_image_tag}
+  %{~ endif ~}
+%{~ endif ~}
+
+imagePullSecrets:
+%{ if docker_image_pull_secret != null ~}
+  - name: ${docker_image_pull_secret}
+%{~ else ~}
+  - name: omd-registry-credentials
+%{~ endif }
+
+config:
+  %{~ if agent_id != null ~}
+  agentId: ${agent_id}
+  %{~ endif ~}
+  authToken: ${collate_auth_token}
+  serverHostApiUrl: "https://${collate_server_domain}/api"
+  serverUrl:        "wss://${collate_server_domain}"
+  secretsManager:   "managed-aws"
+
+  ingestionPods:
+    serviceAccount:
+      annotations:
+        "azure.workload.identity/client-id": "${ingestion_client_id}"
+      automount: true
+
+  argoWorkflows:
+    %{~ if argowf.provisioner == "helm" ~}
+    endpoint: "http://argo-workflows-${environment}-server.${argowf.namespace}.svc:2746"
+    %{~ else ~}
+    endpoint: ${argowf.endpoint}
+    %{~ endif ~}
+
+serviceMonitor:
+  enabled: ${service_monitor_enabled}
