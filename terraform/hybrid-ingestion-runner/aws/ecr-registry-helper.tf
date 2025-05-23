@@ -2,24 +2,27 @@
 
 locals {
   docker_registry = "https://118146679784.dkr.ecr.eu-west-1.amazonaws.com"
-  registry_helper_manifest = var.ECR_ACCESS_KEY == null ? "" : yamldecode(<<-EOF
-  serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
-  containers:
-    - name: "ecr-registry-helper"
-      image: "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
-      envFrom:
-        - secretRef:
-            name: "${kubernetes_secret.ecr_registry_helper[0].metadata[0].name}"
-        - configMapRef:
-            name: "${kubernetes_config_map.ecr_registry_helper_config[0].metadata[0].name}"
-      command: ["/bin/bash", "-c"]
-      args:
-      - ECR_TOKEN="$(aws ecr get-login-password)" &&
-        kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME &&
-        kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=${local.docker_registry} --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME &&
-        echo "Secret was successfully updated at $(date)"
-  restartPolicy: "Never"
-  EOF
+  registry_helper_manifest = yamldecode(
+    var.ECR_ACCESS_KEY == null ?
+    "{}" :
+    <<-EOF
+    serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
+    containers:
+      - name: "ecr-registry-helper"
+        image: "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
+        envFrom:
+          - secretRef:
+              name: "${kubernetes_secret.ecr_registry_helper[0].metadata[0].name}"
+          - configMapRef:
+              name: "${kubernetes_config_map.ecr_registry_helper_config[0].metadata[0].name}"
+        command: ["/bin/bash", "-c"]
+        args:
+        - ECR_TOKEN="$(aws ecr get-login-password)" &&
+          kubectl delete secret --ignore-not-found $DOCKER_SECRET_NAME -n $NAMESPACE_NAME &&
+          kubectl create secret docker-registry $DOCKER_SECRET_NAME --docker-server=${local.docker_registry} --docker-username=AWS --docker-password=$ECR_TOKEN --namespace=$NAMESPACE_NAME &&
+          echo "Secret was successfully updated at $(date)"
+    restartPolicy: "Never"
+    EOF
   )
 }
 
