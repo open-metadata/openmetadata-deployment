@@ -1,0 +1,28 @@
+fullnameOverride: ${fullname_override}
+%{ if ! argowf.crd_enabled ~}
+crds:
+  install: false
+%{ endif ~}
+
+controller:
+  serviceAccount:
+    create: true
+    name: ${argowf.controller_sa_name}
+    annotations:
+      azure.workload.identity/client-id: ${controller_client_id}
+  persistence:
+    postgresql:
+      host: ${db_host}
+
+server:
+  serviceAccount:
+    create: true
+    name: ${argowf.server_sa_name}
+    annotations:
+      azure.workload.identity/client-id: ${server_client_id}
+
+artifactRepository:
+  azure:
+    storageAccount: ${argowf.storage_account_name}
+    storageContainer: ${argowf.storage_container_name}
+useStaticCredentials: false
