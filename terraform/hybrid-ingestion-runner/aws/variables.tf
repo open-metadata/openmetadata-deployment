@@ -130,6 +130,7 @@ variable "argowf" {
       backup_retention_period = optional(number)       # Backup retention period for the database
       vpc_id                  = optional(string)       # VPC ID for the database
       subnet_ids              = optional(list(string)) # List of subnet IDs for the database. Private subnets are recommended
+      existing_endpoint       = optional(string)       # Existing database endpoint to use instead of creating a new one
     }))
   })
 }

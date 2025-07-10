@@ -100,12 +100,14 @@ locals {
       backup_retention_period = coalesce(
         try(var.argowf.db.backup_retention_period, null),
       local.argowf_defaults.db.backup_retention_period)
-      vpc_id     = var.argowf.db.vpc_id
-      subnet_ids = var.argowf.db.subnet_ids
+      vpc_id            = try(var.argowf.db.vpc_id, null)
+      subnet_ids        = try(var.argowf.db.subnet_ids, null)
+      existing_endpoint = try(var.argowf.db.existing_endpoint, null)
     }
   } : null
 
-  argowf_existing = local.argowf_provisioner == "existing" ? var.argowf : null
+  argowf_existing  = local.argowf_provisioner == "existing" ? var.argowf : null
+  argowf_create_db = local.argowf_provisioner == "helm" && local.argowf_helm.db.existing_endpoint == null
 
   argowf_config = {
     helm     = local.argowf_helm
