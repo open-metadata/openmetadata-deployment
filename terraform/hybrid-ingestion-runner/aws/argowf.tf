@@ -51,8 +51,8 @@ module "rds_argo_workflows" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~>6.11"
 
-  for_each           = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
-  create_db_instance = local.argowf.db.existing_endpoint == null
+  for_each           = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
+  create_db_instance = local.argowf_create_db
 
   identifier                  = local.argowf.db.instance_name
   db_name                     = local.argowf.db.name
@@ -99,7 +99,7 @@ module "sg_argo_db" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~>5.3"
 
-  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  for_each = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
 
   create = local.argowf_create_db
 
