@@ -74,6 +74,36 @@ Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
  - `deletion_protection`: Deletion protection for the database
  - `skip_final_snapshot`: Skip final snapshot for the database
 
+#### Deploy Argo Workflows using an existing database
+
+You can deploy Argo Workflows using an existing database by setting the variable `argowf.db.existing_endpoint`. In this case, you must also provide the following variables:
+
+```hcl
+argowf = {
+  db = {
+    existing_endpoint = "my-existing-db.cluster-xxxxxxxxxx.eu-west-1.rds.amazonaws.com:5432"
+    name              = "existing_db_name"
+    user              = "existing_user"
+    credetials_secret = "existing_secret"
+  }
+}
+```
+
+Also you must ensure that:
+* The database is accessible from the EKS cluster, ie. the security group of the database allows access from the EKS nodes security group.
+* The Kubernetes secret `argowf.db.credetials_secret` exists in the Argo Workflows namespace and contains the database credentials in the following format:
+```yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+  namespace: argowf-namespace
+type: Opaque
+data:
+  username: <base64 encoded username>
+  password: <base64 encoded password>
+```
+
 ### S3 bucket
 
 - `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.

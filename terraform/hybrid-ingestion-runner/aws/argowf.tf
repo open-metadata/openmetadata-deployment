@@ -24,7 +24,7 @@ resource "helm_release" "argowf" {
       {
         fullname_override  = "argo-workflows-${var.environment}"
         region             = var.region
-        db_host            = module.rds_argo_workflows["this"].db_instance_endpoint
+        db_host            = local.argowf_create_db ? module.rds_argo_workflows["this"].db_instance_endpoint : local.argowf.db.existing_endpoint
         controller_iam_arn = module.irsa_role_argowf_controller["this"].iam_role_arn
         server_iam_arn     = module.irsa_role_argowf_server["this"].iam_role_arn
         argowf             = local.argowf
@@ -36,7 +36,7 @@ resource "helm_release" "argowf" {
 # Database resources (Postgres)
 
 resource "random_password" "argowf_db_password" {
-  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  for_each = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
 
   length           = 16
   min_upper        = 1
@@ -51,7 +51,8 @@ module "rds_argo_workflows" {
   source  = "terraform-aws-modules/rds/aws"
   version = "~>6.11"
 
-  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  for_each           = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
+  create_db_instance = local.argowf_create_db
 
   identifier                  = local.argowf.db.instance_name
   db_name                     = local.argowf.db.name
@@ -98,9 +99,10 @@ module "sg_argo_db" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~>5.3"
 
-  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  for_each = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
 
-  create             = true
+  create = local.argowf_create_db
+
   name               = "${local.argowf.db.instance_name}-db"
   description        = "Security group for Argo Workflows db"
   vpc_id             = var.argowf.db.vpc_id
@@ -119,7 +121,7 @@ module "sg_argo_db" {
 }
 
 resource "kubernetes_secret" "argowf_db_credentials" {
-  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  for_each = toset(local.argowf_provisioner == "helm" && local.argowf_create_db ? ["this"] : [])
 
   metadata {
     name      = local.argowf.db.credentials_secret
