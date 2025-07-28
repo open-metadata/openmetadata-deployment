@@ -128,3 +128,48 @@ ingestion = {
   ]
 }
 ```
+
+## Common errors
+
+### Error: Failed to query available provider packages and Inconsistent dependency lock file
+
+If you encounter the following errors when running `terraform init`, `terraform plan` or `terraform apply`:
+
+```bash
+╷
+│ Error: Inconsistent dependency lock file
+│ 
+│ The following dependency selections recorded in the lock file are inconsistent with the current configuration:
+│   - provider registry.terraform.io/hashicorp/aws: locked version selection 5.93.0 doesn't match the updated version constraints ">= 3.29.0, >= 4.0.0, >= 5.83.0, >= 5.92.0, ~> 6.0"
+│   - provider registry.terraform.io/hashicorp/helm: locked version selection 2.17.0 doesn't match the updated version constraints "~> 3.0"
+│ 
+│ To update the locked dependency selections to match a changed configuration, run:
+│   terraform init -upgrade
+```
+
+```bash
+Initializing the backend...
+Initializing modules...
+Initializing provider plugins...
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Reusing previous version of hashicorp/helm from the dependency lock file
+- Reusing previous version of hashicorp/kubernetes from the dependency lock file
+- Reusing previous version of hashicorp/random from the dependency lock file
+- Using previously-installed hashicorp/helm v3.0.2
+- Using previously-installed hashicorp/kubernetes v2.38.0
+- Using previously-installed hashicorp/random v3.7.2
+╷
+│ Error: Failed to query available provider packages
+│ 
+│ Could not retrieve the list of available versions for provider hashicorp/aws: locked provider registry.terraform.io/hashicorp/aws 5.100.0 does not match configured version
+│ constraint >= 3.29.0, >= 4.0.0, >= 5.83.0, >= 5.92.0, ~> 6.0; must use terraform init -upgrade to allow selection of new versions
+│ 
+│ To see which modules are currently depending on hashicorp/aws and what versions are specified, run the following command:
+│     terraform providers
+```
+
+You can fix this by running the following command:
+
+```bash
+terraform init -upgrade
+```
