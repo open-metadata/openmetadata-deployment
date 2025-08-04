@@ -75,7 +75,7 @@
 | <a name="input_ECR_SECRET_KEY"></a> [ECR\_SECRET\_KEY](#input\_ECR\_SECRET\_KEY) | The Secret Key shared by Collate to pull Docker images from ECR. | `string` | n/a | yes |
 | <a name="input_app_helm_chart_version"></a> [app\_helm\_chart\_version](#input\_app\_helm\_chart\_version) | The version of the OpenMetadata Helm chart to deploy. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Namespace to deploy the OpenMetadata application. | `string` | `"openmetadata"` | no |
-| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.8.9"` | no |
+| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.9.0"` | no |
 | <a name="input_argowf_db_instance_class"></a> [argowf\_db\_instance\_class](#input\_argowf\_db\_instance\_class) | Argo Workflows database instance type. | `string` | `"db.t4g.micro"` | no |
 | <a name="input_argowf_db_instance_name"></a> [argowf\_db\_instance\_name](#input\_argowf\_db\_instance\_name) | Name of the Argo Workflows database instance. | `string` | `"argowf"` | no |
 | <a name="input_argowf_db_iops"></a> [argowf\_db\_iops](#input\_argowf\_db\_iops) | The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
@@ -92,11 +92,11 @@
 | <a name="input_db_storage"></a> [db\_storage](#input\_db\_storage) | OpenMetadata database storage size. | `string` | `100` | no |
 | <a name="input_db_storage_throughput"></a> [db\_storage\_throughput](#input\_db\_storage\_throughput) | OpenMetadata storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_db_storage_type"></a> [db\_storage\_type](#input\_db\_storage\_type) | OpenMetadata database storage type. | `string` | `"gp3"` | no |
-| <a name="input_docker_image_name"></a> [docker\_image\_name](#input\_docker\_image\_name) | Full path of the server Docker image name, excluding the tag. | `string` | `"1.8.96679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"` | no |
+| <a name="input_docker_image_name"></a> [docker\_image\_name](#input\_docker\_image\_name) | Full path of the server Docker image name, excluding the tag. | `string` | `"1.9.06679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"` | no |
 | <a name="input_docker_image_tag"></a> [docker\_image\_tag](#input\_docker\_image\_tag) | Docker image tag for both the server and ingestion. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_eks_cluster"></a> [eks\_cluster](#input\_eks\_cluster) | Name of the EKS cluster where OpenMetadata will be deployed. | `string` | n/a | yes |
 | <a name="input_eks_nodes_sg_ids"></a> [eks\_nodes\_sg\_ids](#input\_eks\_nodes\_sg\_ids) | List of security group IDs attached to the EKS nodes. Used to allow traffic from the OpenMetadata application to the databases. | `list(string)` | `[]` | no |
-| <a name="input_ingestion_image_name"></a> [ingestion\_image\_name](#input\_ingestion\_image\_name) | Full path of the ingestion Docker image name, excluding the tag. | `string` | `"1.8.96679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"` | no |
+| <a name="input_ingestion_image_name"></a> [ingestion\_image\_name](#input\_ingestion\_image\_name) | Full path of the ingestion Docker image name, excluding the tag. | `string` | `"1.9.06679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"` | no |
 | <a name="input_initial_admins"></a> [initial\_admins](#input\_initial\_admins) | List of initial admins to create in the OpenMetadata application. Do not include the domain name. | `list(string)` | <pre>[<br/>  "admin"<br/>]</pre> | no |
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | The ARN of the KMS key to encrypt database and backups. Your account's default KMS key will be used if not specified. | `string` | `null` | no |
 | <a name="input_opensearch_name"></a> [opensearch\_name](#input\_opensearch\_name) | The OpenSearch domain name. | `string` | `"openmetadata"` | no |
