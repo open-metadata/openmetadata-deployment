@@ -30,7 +30,10 @@ config:
   %{~ if ingestion != null ~}
     %{~ if ingestion.image != null ~}
     %{~ if ingestion.image.repository != null ~}
-    baseImage: "${ingestion.image.repository}:${ ingestion.image.tag != null ? ingestion.image.tag : image_tag }"
+    repository: "${ingestion.image.repository}"
+    %{~ endif ~}
+    %{~ if ingestion.image.tag != null ~}
+    tag: "${ingestion.image.tag}"
     %{~ endif ~}
     imagePullSecrets: "${ingestion.image.pull_secrets != null ? ingestion.image.pull_secrets : "omd-registry-credentials"}"
     %{~ endif ~}

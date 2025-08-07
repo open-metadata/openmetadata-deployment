@@ -39,6 +39,7 @@ resource "kubernetes_manifest" "ecr_registry_helper_cronjob" {
       schedule                   = "0 */6 * * *"
       startingDeadlineSeconds    = 10
       successfulJobsHistoryLimit = 2
+      failedJobsHistoryLimit     = 2
       suspend                    = false
       jobTemplate = {
         spec = {
