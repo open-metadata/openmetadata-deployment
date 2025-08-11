@@ -1,6 +1,5 @@
 locals {
   namespace = "${var.namespace}-${var.environment}"
-  image_tag = "om-${var.release_version}-cl-${var.release_version}"
 }
 
 resource "helm_release" "hybrid_runner" {
@@ -13,7 +12,6 @@ resource "helm_release" "hybrid_runner" {
   values = [
     templatefile("${path.module}/helm_values.tftpl",
       {
-        image_tag                = local.image_tag
         environment              = var.environment
         docker_image_repository  = var.docker_image_repository
         docker_image_tag         = var.docker_image_tag
