@@ -92,7 +92,7 @@
 | <a name="input_db_storage"></a> [db\_storage](#input\_db\_storage) | OpenMetadata database storage size. | `string` | `100` | no |
 | <a name="input_db_storage_throughput"></a> [db\_storage\_throughput](#input\_db\_storage\_throughput) | OpenMetadata storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_db_storage_type"></a> [db\_storage\_type](#input\_db\_storage\_type) | OpenMetadata database storage type. | `string` | `"gp3"` | no |
-| <a name="input_docker_image_name"></a> [docker\_image\_name](#input\_docker\_image\_name) | Full path of the server Docker image name, excluding the tag. | `string` | `"1.9.06679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"` | no |
+| <a name="input_docker_image_name"></a> [docker\_image\_name](#input\_docker\_image\_name) | Full path of the server Docker image name, excluding the tag. | `string` | `"118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"` | no |
 | <a name="input_docker_image_tag"></a> [docker\_image\_tag](#input\_docker\_image\_tag) | Docker image tag for both the server and ingestion. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_eks_cluster"></a> [eks\_cluster](#input\_eks\_cluster) | Name of the EKS cluster where OpenMetadata will be deployed. | `string` | n/a | yes |
 | <a name="input_eks_nodes_sg_ids"></a> [eks\_nodes\_sg\_ids](#input\_eks\_nodes\_sg\_ids) | List of security group IDs attached to the EKS nodes. Used to allow traffic from the OpenMetadata application to the databases. | `list(string)` | `[]` | no |

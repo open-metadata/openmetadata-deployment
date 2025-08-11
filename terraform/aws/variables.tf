@@ -54,7 +54,7 @@ variable "app_namespace" {
 
 variable "docker_image_name" {
   type        = string
-  default     = "1.9.06679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"
+  default     = "118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-eu-west-1"
   description = "Full path of the server Docker image name, excluding the tag."
 }
 
@@ -66,7 +66,7 @@ variable "docker_image_tag" {
 
 variable "ingestion_image_name" {
   type        = string
-  default     = "1.9.06679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"
+  default     = "118146679784.dkr.ecr.eu-west-1.amazonaws.com/collate-customers-ingestion-eu-west-1"
   description = "Full path of the ingestion Docker image name, excluding the tag."
 }
 
