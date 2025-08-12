@@ -37,7 +37,7 @@ variable "vpc_id" {
 variable "app_version" {
   type        = string
   description = "The version of the OpenMetadata application to deploy."
-  default     = "1.9.0"
+  default     = "1.9.1"
 }
 
 variable "app_helm_chart_version" {
