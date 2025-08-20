@@ -19,9 +19,9 @@ resource "helm_release" "argowf" {
   values = [
     templatefile("${path.module}/argowf_helm_values.tftpl", {
       fullname_override    = "argo-workflows-${var.environment}"
-      db_host              = azurerm_postgresql_flexible_server.argowf.fqdn
-      controller_client_id = azuread_service_principal.argowf_controller.app_id
-      server_client_id     = azuread_service_principal.argowf_server.app_id
+      db_host              = azurerm_postgresql_flexible_server.argowf["this"].fqdn
+      controller_client_id = azurerm_user_assigned_identity.argowf_controller.client_id
+      server_client_id     = azurerm_user_assigned_identity.argowf_server.client_id
       argowf               = local.argowf
     })
   ]
@@ -52,7 +52,6 @@ resource "azurerm_postgresql_flexible_server" "argowf" {
   sku_name               = local.argowf.db.sku_name
   storage_mb             = local.argowf.db.storage_mb
   backup_retention_days  = local.argowf.db.backup_retention_days
-  geo_redundant_backup   = local.argowf.db.geo_redundant_backup
   auto_grow_enabled      = local.argowf.db.auto_grow_enabled
 
   depends_on = [azurerm_storage_account.argowf]

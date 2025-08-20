@@ -1,4 +1,3 @@
-# helm_values.tftpl — runner settings for Azure
 %{~ if docker_image_repository != null || docker_image_tag != null ~}
 image:
   %{~ if docker_image_repository != null ~}
@@ -22,21 +21,42 @@ config:
   %{~ endif ~}
   authToken: ${collate_auth_token}
   serverHostApiUrl: "https://${collate_server_domain}/api"
-  serverUrl:        "wss://${collate_server_domain}"
-  secretsManager:   "managed-aws"
-
+  serverUrl: "wss://${collate_server_domain}"
+  secretsManager: "managed-azure-kv"
   ingestionPods:
+  %{~ if ingestion != null ~} 
+    %{~ if ingestion.image != null ~}
+    %{~ if ingestion.image.repository != null && ingestion.image.tag != null ~}
+    baseImage: "${ingestion.image.repository}:${ingestion.image.tag}"
+    %{~ endif ~}
+    %{~ endif ~}
+    %{~ if ingestion.image.pull_secrets != null ~}
+    imagePullSecrets: "${ingestion.image.pull_secrets}"
+    %{~ else ~}
+    imagePullSecrets: omd-registry-credentials
+    %{~ endif ~}
+    %{~ if ingestion.extra_envs != null ~}
+    extraEnvs: ${ingestion.extra_envs}
+    %{~ endif ~}
+  %{~ endif ~}
     serviceAccount:
       annotations:
         "azure.workload.identity/client-id": "${ingestion_client_id}"
+      %{~ if ingestion != null ~}	
+      %{~ if ingestion.pod_annotations != null ~}	
+        %{~ for key, value in ingestion.pod_annotations ~}
+        "${key}": "${value}"
+        %{~ endfor ~}
+      %{~ endif ~}
+      %{~ endif ~}
       automount: true
-
   argoWorkflows:
     %{~ if argowf.provisioner == "helm" ~}
     endpoint: "http://argo-workflows-${environment}-server.${argowf.namespace}.svc:2746"
     %{~ else ~}
+    %{~ if argowf.provisioner == "existing" ~}
     endpoint: ${argowf.endpoint}
     %{~ endif ~}
-
+    %{~ endif ~}
 serviceMonitor:
   enabled: ${service_monitor_enabled}

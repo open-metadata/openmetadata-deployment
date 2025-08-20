@@ -9,7 +9,6 @@ resource "helm_release" "hybrid_runner" {
   version    = var.release_version
   namespace  = local.namespace
   wait       = false
-
   values = [
     templatefile("${path.module}/helm_values.tftpl", {
       environment              = var.environment
@@ -21,7 +20,7 @@ resource "helm_release" "hybrid_runner" {
       collate_server_domain    = var.collate_server_domain
       service_monitor_enabled  = var.service_monitor_enabled
       ingestion                = var.ingestion
-      ingestion_client_id      = azuread_service_principal.ingestion.app_id
+      ingestion_client_id      = azurerm_user_assigned_identity.ingestion.client_id
       argowf                   = local.argowf
     })
   ]

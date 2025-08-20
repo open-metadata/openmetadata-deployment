@@ -14,11 +14,12 @@ locals {
     crd_enabled            = true
     db = {
       apply_immediately     = true
-      sku_name              = "Standard_B1ms"
-      version               = "12"
+      sku_name              = "B_Standard_B2ms"
+      name                  = "argowf"
+      version               = "16"
       administrator_login   = "dbadmin"
       credentials_secret    = "argowf-db-${var.environment}"
-      storage_mb            = 512
+      storage_mb            = 32768
       backup_retention_days = 7
       geo_redundant_backup  = false
       auto_grow_enabled     = true
@@ -52,6 +53,9 @@ locals {
       apply_immediately = coalesce(
         try(var.argowf.db.apply_immediately, null),
       local.argowf_defaults.db.apply_immediately)
+      name = coalesce(
+        try(var.argowf.db.name, null),
+      local.argowf_defaults.db.name)
       sku_name = coalesce(
         try(var.argowf.db.sku_name, null),
       local.argowf_defaults.db.sku_name)
@@ -70,9 +74,6 @@ locals {
       backup_retention_days = coalesce(
         try(var.argowf.db.backup_retention_days, null),
       local.argowf_defaults.db.backup_retention_days)
-      geo_redundant_backup = coalesce(
-        try(var.argowf.db.geo_redundant_backup, null),
-      local.argowf_defaults.db.geo_redundant_backup)
       auto_grow_enabled = coalesce(
         try(var.argowf.db.auto_grow_enabled, null),
       local.argowf_defaults.db.auto_grow_enabled)

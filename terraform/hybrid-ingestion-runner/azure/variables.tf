@@ -29,7 +29,7 @@ variable "location" {
 variable "release_version" {
   type        = string
   description = "The Hybrid Ingestion Runner version to deploy."
-  default     = "1.7.0"
+  default     = "1.8.10"
 }
 
 variable "namespace" {
@@ -108,20 +108,20 @@ variable "argowf" {
     crd_enabled            = optional(bool)
     db = optional(object({
       apply_immediately     = optional(bool)
+      name                  = optional(string)
       sku_name              = optional(string)
       version               = optional(string)
       administrator_login   = optional(string)
       credentials_secret    = optional(string)
       storage_mb            = optional(number)
       backup_retention_days = optional(number)
-      geo_redundant_backup  = optional(bool)
       auto_grow_enabled     = optional(bool)
     }))
   })
 }
 
 variable "ingestion" {
-  description = "Ingestion pods settings"
+  description = "Ingestion pods helm configurations."
   type = object({
     image = optional(object({
       repository   = optional(string)

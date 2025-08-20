@@ -1,17 +1,17 @@
-# Helper to refresh Collate Docker image credentials from ECR
+# Helper to refresh Collate Docker image credentials
 
 locals {
   docker_registry = "https://118146679784.dkr.ecr.eu-west-1.amazonaws.com"
   registry_helper_manifest = yamldecode(<<-EOF
-  serviceAccountName : "${kubernetes_service_account.omd_cron_sa.metadata[0].name}"
+  serviceAccountName : "${kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name}"
   containers:
     - name: "ecr-registry-helper"
       image: "public.ecr.aws/r2h3l6e4/awscli-kubectl:latest"
       envFrom:
         - secretRef:
-            name: "${kubernetes_secret.ecr_registry_helper.metadata[0].name}"
+            name: "${kubernetes_secret.ecr_registry_helper[0].metadata[0].name}"
         - configMapRef:
-            name: "${kubernetes_config_map.ecr_registry_helper_config.metadata[0].name}"
+            name: "${kubernetes_config_map.ecr_registry_helper_config[0].metadata[0].name}"
       command: ["/bin/bash", "-c"]
       args:
       - ECR_TOKEN="$(aws ecr get-login-password)" &&
@@ -30,7 +30,7 @@ resource "kubernetes_manifest" "ecr_registry_helper_cronjob" {
     kind       = "CronJob"
     metadata = {
       name      = "ecr-registry-helper"
-      namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+      namespace = kubernetes_namespace.hybrid_runner.id
     }
     spec = {
       schedule                   = "0 */6 * * *"
@@ -48,6 +48,7 @@ resource "kubernetes_manifest" "ecr_registry_helper_cronjob" {
   }
 }
 
+# Job to run the helper immediately after deployment
 resource "kubernetes_manifest" "ecr_registry_helper_one_shot" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   manifest = {
@@ -55,7 +56,7 @@ resource "kubernetes_manifest" "ecr_registry_helper_one_shot" {
     kind       = "Job"
     metadata = {
       name      = "ecr-registry-helper-one-shot"
-      namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+      namespace = kubernetes_namespace.hybrid_runner.id
     }
     spec = {
       template = {
@@ -65,11 +66,13 @@ resource "kubernetes_manifest" "ecr_registry_helper_one_shot" {
   }
 }
 
+# Configuration assets
+
 resource "kubernetes_secret" "ecr_registry_helper" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
     name      = "aws-credentials"
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
   data = {
     AWS_SECRET_ACCESS_KEY = var.ECR_SECRET_KEY
@@ -82,24 +85,25 @@ resource "kubernetes_config_map" "ecr_registry_helper_config" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
     name      = "omd-pull-secret-refresh"
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
 
   data = {
     AWS_REGION         = "eu-west-1"
     DOCKER_SECRET_NAME = "omd-registry-credentials"
-    NAMESPACE_NAME     = kubernetes_namespace.hybrid_runner.metadata[0].name
+    NAMESPACE_NAME     = kubernetes_namespace.hybrid_runner.id
   }
 }
+
 
 # Roles and role binding
 # Grants the CronJob permission to delete and create secrets in the desired namespace.
 
-resource "kubernetes_service_account" "omd_cron_sa" {
+resource "kubernetes_service_account_v1" "omd_cron_sa" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
     name      = "omd-pull-secret-refresh"
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
   depends_on = [kubernetes_namespace.hybrid_runner]
 }
@@ -108,7 +112,7 @@ resource "kubernetes_role" "secrets" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
     name      = "access-to-secrets"
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
 
   rule {
@@ -122,7 +126,7 @@ resource "kubernetes_role_binding" "cron" {
   count = var.ECR_ACCESS_KEY != null ? 1 : 0
   metadata {
     name      = "omd-pull-secret-refresh"
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
 
   role_ref {
@@ -133,7 +137,7 @@ resource "kubernetes_role_binding" "cron" {
 
   subject {
     kind      = "ServiceAccount"
-    name      = kubernetes_service_account.omd_cron_sa[0].metadata[0].name
-    namespace = kubernetes_namespace.hybrid_runner.metadata[0].name
+    name      = kubernetes_service_account_v1.omd_cron_sa[0].metadata[0].name
+    namespace = kubernetes_namespace.hybrid_runner.id
   }
 }
