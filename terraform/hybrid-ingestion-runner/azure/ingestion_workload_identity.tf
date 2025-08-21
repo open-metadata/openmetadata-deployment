@@ -25,3 +25,13 @@ resource "azurerm_role_assignment" "ingestion_storage_blob_data_contributor" {
   principal_type       = "ServicePrincipal"
   depends_on           = [azurerm_user_assigned_identity.ingestion]
 }
+
+# Access to Azure Key Vault as Secrets Officer
+resource "azurerm_role_assignment" "ingestion_key_vault_secrets_officer" {
+  count = var.ingestion != null ? 0 : 1
+  scope                = data.azurerm_key_vault.key_vault[0].id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = azurerm_user_assigned_identity.ingestion.principal_id
+  principal_type       = "ServicePrincipal"
+  depends_on           = [azurerm_user_assigned_identity.ingestion]
+}

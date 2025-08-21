@@ -10,7 +10,7 @@ locals {
     controller_sa_name     = "argo-workflows-controller"
     server_sa_name         = "argo-workflows-server"
     storage_account_name   = lower("argowf${var.environment}${random_string.storage_account_suffix.result}")
-    storage_container_name = lower("argo-workflows-${var.environment}")
+    storage_container_name = lower("argoworkflows${var.environment}")
     crd_enabled            = true
     db = {
       apply_immediately     = true

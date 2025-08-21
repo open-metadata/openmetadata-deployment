@@ -94,6 +94,19 @@ variable "ECR_SECRET_KEY" {
   description = "The Secret Key shared by Collate to pull Docker images from ECR."
 }
 
+variable "key_vault_name" {
+  type        = string
+  description = "The name of the Azure Key Vault to retrieve for stored credentials."
+  default     = null
+}
+
+variable "key_vault_resource_group_name" {
+  type        = string
+  description = "The resource group name where the Azure Key Vault is located."
+  default     = null
+  
+}
+
 variable "argowf" {
   description = "Argo Workflows configuration."
   type = object({

@@ -38,6 +38,8 @@ config:
     %{~ if ingestion.extra_envs != null ~}
     extraEnvs: ${ingestion.extra_envs}
     %{~ endif ~}
+  %{~ else ~}
+    extraEnvs: "AZURE_KEY_VAULT_NAME:${azure_key_vault_name}"
   %{~ endif ~}
     serviceAccount:
       annotations:

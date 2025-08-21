@@ -43,6 +43,6 @@ useDefaultArtifactRepo: true
 artifactRepository:
   archiveLogs: true
   azure:
-    endpoint: "{argowf.storage_account_name}"
+    endpoint: "https://${argowf.storage_account_name}.blob.core.windows.net"
     container: ${argowf.storage_container_name}
     useSDKCreds: true

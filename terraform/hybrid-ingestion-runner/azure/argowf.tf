@@ -25,6 +25,7 @@ resource "helm_release" "argowf" {
       argowf               = local.argowf
     })
   ]
+  depends_on = [ azurerm_postgresql_flexible_server.argowf, azurerm_storage_account.argowf ]
 }
 
 # PostgreSQL Flexible Server for Argo persistence
@@ -53,8 +54,26 @@ resource "azurerm_postgresql_flexible_server" "argowf" {
   storage_mb             = local.argowf.db.storage_mb
   backup_retention_days  = local.argowf.db.backup_retention_days
   auto_grow_enabled      = local.argowf.db.auto_grow_enabled
+  zone                   = "1"
 
   depends_on = [azurerm_storage_account.argowf]
+}
+
+resource "azurerm_postgresql_flexible_server_firewall_rule" "argowf_allow_azure_services" {
+  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+
+  name                = "allow-azure-services"
+  server_id           = azurerm_postgresql_flexible_server.argowf["this"].id
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
+resource "azurerm_postgresql_flexible_server_database" "argowf_database" {
+  for_each = toset(local.argowf_provisioner == "helm" ? ["this"] : [])
+  name      = local.argowf.db.name
+  server_id = azurerm_postgresql_flexible_server.argowf["this"].id
+  collation = "en_US.utf8"
+  charset   = "utf8"
 }
 
 # Kubernetes secret to provide DB credentials to Argo
@@ -69,4 +88,6 @@ resource "kubernetes_secret" "argowf_db_credentials" {
     username = local.argowf.db.administrator_login
     password = random_password.argowf_db_password["this"].result
   }
+
+  depends_on = [ kubernetes_namespace.argowf ]
 }
