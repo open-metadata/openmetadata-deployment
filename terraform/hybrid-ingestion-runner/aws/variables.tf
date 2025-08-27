@@ -20,7 +20,7 @@ variable "region" {
 variable "release_version" {
   type        = string
   description = "The Hybrid Ingestion Runner version to deploy."
-  default     = "1.9.3"
+  default     = "1.9.4"
 }
 
 variable "namespace" {
