@@ -23,7 +23,7 @@ jobs:
           fetch-depth: 0
       - name: Update application versions
         run: |
-          sed -i "s/$(cat .version)/${{ inputs.release_branch_name}}/g" .version terraform/aws/README.md terraform/aws/README_terraform_docs.md terraform/aws/variables.tf terraform/hybrid-ingestion-runner/aws/variables.tf 
+          sed -i "s/$(cat .version)/${{ inputs.release_branch_name}}/g" .version terraform/aws/README.md terraform/aws/README_terraform_docs.md terraform/aws/variables.tf terraform/hybrid-ingestion-runner/aws/variables.tf terraform/hybrid-ingestion-runner/azure/variables.tf
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
