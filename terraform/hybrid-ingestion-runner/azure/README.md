@@ -30,7 +30,7 @@ collate_auth_token   = "YOUR_COLLATE_TOKEN"
 collate_server_domain = "my-company.getcollate.io"
 
 # Hybrid Ingestion Runner settings
-release_version          = "1.9.1"
+release_version          = "1.9.5"
 service_monitor_enabled  = false
 
 # AWS ECR credentials (for private image pull)
