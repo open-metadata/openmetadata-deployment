@@ -4,7 +4,7 @@ image:
   repository: ${docker_image_repository}
   %{~ endif ~}
   %{~ if docker_image_tag != null ~}
-  tag: ${docker_image_tag}
+  tag: "${docker_image_tag}"
   %{~ endif ~}
   %{~ if docker_image_pull_policy != null ~}
   pullPolicy: ${docker_image_pull_policy}
@@ -20,7 +20,7 @@ imagePullSecrets:
 
 config:
   %{~ if agent_id != null ~}
-  agentId: ${agent_id}
+  agentId: "${agent_id}"
   %{~ endif ~}
   authToken: ${collate_auth_token}
   serverHostApiUrl: "https://${collate_server_domain}/api"
