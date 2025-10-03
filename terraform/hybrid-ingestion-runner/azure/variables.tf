@@ -104,7 +104,7 @@ variable "key_vault_resource_group_name" {
   type        = string
   description = "The resource group name where the Azure Key Vault is located."
   default     = null
-  
+
 }
 
 variable "argowf" {
