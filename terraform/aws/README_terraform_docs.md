@@ -75,7 +75,7 @@
 | <a name="input_ECR_SECRET_KEY"></a> [ECR\_SECRET\_KEY](#input\_ECR\_SECRET\_KEY) | The Secret Key shared by Collate to pull Docker images from ECR. | `string` | n/a | yes |
 | <a name="input_app_helm_chart_version"></a> [app\_helm\_chart\_version](#input\_app\_helm\_chart\_version) | The version of the OpenMetadata Helm chart to deploy. If not specified, the variable `app_version` will be used. | `string` | `null` | no |
 | <a name="input_app_namespace"></a> [app\_namespace](#input\_app\_namespace) | Namespace to deploy the OpenMetadata application. | `string` | `"openmetadata"` | no |
-| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.9.12"` | no |
+| <a name="input_app_version"></a> [app\_version](#input\_app\_version) | The version of the OpenMetadata application to deploy. | `string` | `"1.10.3"` | no |
 | <a name="input_argowf_db_instance_class"></a> [argowf\_db\_instance\_class](#input\_argowf\_db\_instance\_class) | Argo Workflows database instance type. | `string` | `"db.t4g.micro"` | no |
 | <a name="input_argowf_db_instance_name"></a> [argowf\_db\_instance\_name](#input\_argowf\_db\_instance\_name) | Name of the Argo Workflows database instance. | `string` | `"argowf"` | no |
 | <a name="input_argowf_db_iops"></a> [argowf\_db\_iops](#input\_argowf\_db\_iops) | The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
