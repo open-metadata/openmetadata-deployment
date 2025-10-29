@@ -1,5 +1,9 @@
 locals {
   namespace = "${var.namespace}-${var.environment}"
+  argowf = {
+    provisioner = coalesce(try(var.argowf.provisioner, null), "helm")
+    endpoint    = try(var.argowf.endpoint, null)
+  }
 }
 
 resource "helm_release" "hybrid_runner" {
@@ -12,7 +16,6 @@ resource "helm_release" "hybrid_runner" {
   values = [
     templatefile("${path.module}/helm_values.tftpl",
       {
-        environment              = var.environment
         docker_image_repository  = var.docker_image_repository
         docker_image_tag         = var.docker_image_tag
         docker_image_pull_secret = var.docker_image_pull_secret
@@ -24,10 +27,9 @@ resource "helm_release" "hybrid_runner" {
         ingestion                = var.ingestion
         ingestion_role_arn       = module.ingestion_pods_irsa.iam_role_arn
         argowf                   = local.argowf
+        ecr_access_key           = var.ECR_ACCESS_KEY
+        ecr_secret_key           = var.ECR_SECRET_KEY
       }
     )
-  ]
-  depends_on = [
-    kubernetes_namespace.hybrid_runner
   ]
 }

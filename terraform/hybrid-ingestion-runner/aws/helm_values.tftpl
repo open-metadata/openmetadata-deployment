@@ -23,7 +23,7 @@ config:
   agentId: "${agent_id}"
   %{~ endif ~}
   authToken: ${collate_auth_token}
-  serverHostApiUrl: "https://${collate_server_domain}/api"
+  serverHost: "https://${collate_server_domain}/api"
   serverUrl: "wss://${collate_server_domain}"
   secretsManager: "managed-aws"
   ingestionPods:
@@ -55,13 +55,25 @@ config:
       %{~ endif ~}
       automount: true
   argoWorkflows:
-    %{~ if argowf.provisioner == "helm" ~}
-    endpoint: "http://argo-workflows-${environment}-server.${argowf.namespace}.svc:2746"
-    %{~ else ~}
     %{~ if argowf.provisioner == "existing" ~}
     endpoint: ${argowf.endpoint}
-    %{~ endif ~}
     %{~ endif ~}
 # Service monitor for Prometheus metrics
 serviceMonitor:
   enabled: ${service_monitor_enabled}
+
+
+%{~ if argowf.provisioner == "helm" ~}
+installArgoWorkflows: true
+%{~ endif ~}
+
+# ECR Registry helper
+ecrRegistryHelper:
+  %{~ if ecr_access_key != null ~}
+  collateCredentials:
+    values:
+      accessKeyId: "${ ecr_access_key }"
+      secretAccessKey: "${ ecr_secret_key }"
+  %{~ else ~}
+  enabled: false
+  %{~ endif ~}

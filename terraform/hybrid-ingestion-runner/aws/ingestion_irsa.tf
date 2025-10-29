@@ -6,23 +6,6 @@ locals {
 
 data "aws_iam_policy_document" "ingestion_pods" {
   statement {
-    sid = "ListBuckets"
-
-    actions = [
-      "s3:ListBucket"
-    ]
-
-    resources = [module.s3_bucket.s3_bucket_arn]
-  }
-  statement {
-    sid = "S3RW"
-    actions = [
-      "s3:PutObject"
-    ]
-
-    resources = ["${module.s3_bucket.s3_bucket_arn}/workflows/*"]
-  }
-  statement {
     sid = "SecretsManager"
     actions = [
       "secretsmanager:GetSecretValue",
