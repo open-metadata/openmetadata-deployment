@@ -23,8 +23,7 @@ config:
   agentId: "${agent_id}"
   %{~ endif ~}
   authToken: ${collate_auth_token}
-  serverHost: "https://${collate_server_domain}/api"
-  serverUrl: "wss://${collate_server_domain}"
+  serverHost: ${collate_server_domain}
   secretsManager: "managed-aws"
   ingestionPods:
   %{~ if ingestion != null ~}
