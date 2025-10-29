@@ -6,7 +6,6 @@
 - An EKS cluster
   - version >= 1.28
   - [OIDC provider](https://docs.aws.amazon.com/eks/latest/userguide/enable-iam-roles-for-service-accounts.html)
-- A VPC with at least 2 subnets, private recommended
 
 ## Usage
 
@@ -24,17 +23,6 @@ environment     = "sandbox"
 # Collate server authentication
 collate_auth_token = "XXXXXXXXXXXXXXXXXXXXXXXXXXX"
 collate_server_domain = "my-company.getcollate.io"
-
-# Argo Workflows settings
-argowf = {
-  # Security group assigned to the EKS nodes, used to allow access to the database
-  eks_nodes_sg_ids = ["sg-XXXXXXXXXXXXX"]
-  db = {
-    # VPC & subnets, used to deploy the database
-    vpc_id              = "vpc-0123456789"
-    subnet_ids          = ["subnet-00000000000001", "subnet-00000000000002"]
-  }
-}
 
 # ECR credentials to pull the Docker images
 ECR_ACCESS_KEY = "" # provided by Collate
@@ -57,56 +45,6 @@ The variables listed in this section have default values, you can skip their def
 
 ### Versions
  - `release_version`: The Hybrid Ingestion Runner version to deploy.
- - `argowf.helm_chart_version`: The Argo Workflows Helm chart version to deploy. Change this only if Collate requires it.
-
-### KMS key
-
-- `kms_key_id` The ARN of the KMS key to encrypt database and backups. Your account's default KMS key will be used if not specified.
-
-### Database
-
-By default this project will create one PostgreSQL database instance for Argo Workflows.
-
-Argo Workflows database parameters are defined in the variable `argowf.db`, ie.:
- - `instance_class`: Database instance type
- - `instance_name`: Name of the database instance
- - `multi_az`: Multi-AZ deployment for the database
- - `deletion_protection`: Deletion protection for the database
- - `skip_final_snapshot`: Skip final snapshot for the database
-
-#### Deploy Argo Workflows using an existing database
-
-You can deploy Argo Workflows using an existing database by setting the variable `argowf.db.existing_endpoint`. In this case, you must also provide the following variables:
-
-```hcl
-argowf = {
-  db = {
-    existing_endpoint = "my-existing-db.cluster-xxxxxxxxxx.eu-west-1.rds.amazonaws.com:5432"
-    name              = "existing_db_name"
-    user              = "existing_user"
-    credetials_secret = "existing_secret"
-  }
-}
-```
-
-Also you must ensure that:
-* The database is accessible from the EKS cluster, ie. the security group of the database allows access from the EKS nodes security group.
-* The Kubernetes secret `argowf.db.credetials_secret` exists in the Argo Workflows namespace and contains the database credentials in the following format:
-```yaml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: my-secret
-  namespace: argowf-namespace
-type: Opaque
-data:
-  username: <base64 encoded username>
-  password: <base64 encoded password>
-```
-
-### S3 bucket
-
-- `argowf.s3_bucket_name`: Name of the S3 bucket to use for the Argo Workflows logs. If not specified, a random name will be generated with the `argo-workflows-` prefix.
 
 ## Ingestion Pods
 
@@ -173,3 +111,7 @@ You can fix this by running the following command:
 ```bash
 terraform init -upgrade
 ```
+
+## Breaking changes
+### 1.10
+- RDS Database and S3 bucket are no longer needed and they will be removed

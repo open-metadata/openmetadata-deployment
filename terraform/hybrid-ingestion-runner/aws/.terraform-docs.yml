@@ -1,24 +1,60 @@
-formatter: "markdown"
+## Requirements
 
-version: ">= 0.16"
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 6.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 3.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
 
-output:
-  file: README_terraform.md
-  mode: replace
-  template: |-
-    {{ .Content }}
+## Providers
 
-sections:
-  show-all: false
-  show:
-    - data-sources
-    - inputs
-    - modules
-    - outputs
-    - providers
-    - requirements
-    - resources
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 6.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | ~> 3.0 |
 
-sort:
-  enabled: true
-  by: name
+## Modules
+
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_ingestion_pods_irsa"></a> [ingestion\_pods\_irsa](#module\_ingestion\_pods\_irsa) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.55 |
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [aws_iam_policy.ingestion_pods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_role_policy_attachment.ingestion_pods_extra](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [helm_release.hybrid_runner](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_eks_cluster.eks](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/eks_cluster) | data source |
+| [aws_iam_openid_connect_provider.oidc](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_openid_connect_provider) | data source |
+| [aws_iam_policy_document.ingestion_pods](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_ECR_ACCESS_KEY"></a> [ECR\_ACCESS\_KEY](#input\_ECR\_ACCESS\_KEY) | The Access key shared by Collate to pull Docker images from ECR. | `string` | n/a | yes |
+| <a name="input_ECR_SECRET_KEY"></a> [ECR\_SECRET\_KEY](#input\_ECR\_SECRET\_KEY) | The Secret Key shared by Collate to pull Docker images from ECR. | `string` | n/a | yes |
+| <a name="input_argowf"></a> [argowf](#input\_argowf) | Argo Workflows configuration. | <pre>object({<br>    provisioner = optional(string) # Provisioner for the Argo Workflows controller. Options: `helm` or `existing`<br>    endpoint    = optional(string) # Endpoint for the Argo Workflows server. Only used if `provisioner` is `existing`<br>  })</pre> | <pre>{<br>  "provisioner": "helm"<br>}</pre> | no |
+| <a name="input_collate_auth_token"></a> [collate\_auth\_token](#input\_collate\_auth\_token) | The token used to authenticate with the Collate server. | `string` | n/a | yes |
+| <a name="input_collate_server_domain"></a> [collate\_server\_domain](#input\_collate\_server\_domain) | The domain of the Collate server. ie: bigcorp.getcollate.io | `string` | n/a | yes |
+| <a name="input_docker_image_pull_policy"></a> [docker\_image\_pull\_policy](#input\_docker\_image\_pull\_policy) | The Docker image pull policy for the Hybrid Ingestion Runner. | `string` | `"IfNotPresent"` | no |
+| <a name="input_docker_image_pull_secret"></a> [docker\_image\_pull\_secret](#input\_docker\_image\_pull\_secret) | The Docker image pull secret for the Hybrid Ingestion Runner. | `string` | `null` | no |
+| <a name="input_docker_image_repository"></a> [docker\_image\_repository](#input\_docker\_image\_repository) | The Docker image repository for the Hybrid Ingestion Runner. | `string` | `null` | no |
+| <a name="input_docker_image_tag"></a> [docker\_image\_tag](#input\_docker\_image\_tag) | The Docker image tag for the Hybrid Ingestion Runner. | `string` | `null` | no |
+| <a name="input_eks_cluster"></a> [eks\_cluster](#input\_eks\_cluster) | Name of the EKS cluster where the resources will be deployed. | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | The environment name where the resources will be deployed. Must be unique within the AWS Region. | `string` | `"prod"` | no |
+| <a name="input_ingestion"></a> [ingestion](#input\_ingestion) | Ingestiopn pods settings | <pre>object({<br>    image = optional(object({<br>      repository   = optional(string) # Docker image repository<br>      tag          = optional(string) # Docker image tag<br>      pull_secrets = optional(string) # Docker image pull secret<br>    }))<br>    extra_envs         = optional(string)       # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`<br>    pod_annotations    = optional(map(string))  # Annotations for the pods<br>    extra_policies_arn = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role<br>  })</pre> | `null` | no |
+| <a name="input_namespace"></a> [namespace](#input\_namespace) | The application's namespace prefix. Note that `var.environment` will be appended to this value. | `string` | `"collate-runner"` | no |
+| <a name="input_region"></a> [region](#input\_region) | The region where the resources will be deployed. | `string` | `"eu-west-1"` | no |
+| <a name="input_release_version"></a> [release\_version](#input\_release\_version) | The Hybrid Ingestion Runner version to deploy. | `string` | `"1.10.3"` | no |
+| <a name="input_runner_id"></a> [runner\_id](#input\_runner\_id) | Runner identifier that will be assigned to an ingestion pipeline. The name you will see in the Collate UI. | `string` | `null` | no |
+| <a name="input_secrets_manager_path"></a> [secrets\_manager\_path](#input\_secrets\_manager\_path) | The AWS Secrets Manager path that the Ingestion Pods will be allowed to read from. | `string` | `"/collate/hybrid-ingestion-runner"` | no |
+| <a name="input_service_monitor_enabled"></a> [service\_monitor\_enabled](#input\_service\_monitor\_enabled) | Enable service monitor for Prometheus metrics. | `bool` | `false` | no |
+
+## Outputs
+
+No outputs.
