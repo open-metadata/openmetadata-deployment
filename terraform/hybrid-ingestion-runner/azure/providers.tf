@@ -21,7 +21,7 @@ provider "kubernetes" {
 }
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = data.azurerm_kubernetes_cluster.aks.kube_config[0].host
     username               = data.azurerm_kubernetes_cluster.aks.kube_config[0].username
     password               = data.azurerm_kubernetes_cluster.aks.kube_config[0].password
