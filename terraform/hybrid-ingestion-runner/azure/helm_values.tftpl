@@ -13,15 +13,14 @@ imagePullSecrets:
   - name: ${docker_image_pull_secret}
 %{~ else ~}
   - name: omd-registry-credentials
-%{~ endif }
+%{~ endif ~}
 
 config:
   %{~ if agent_id != null ~}
   agentId: "${agent_id}"
   %{~ endif ~}
-  authToken: ${collate_auth_token}
-  serverHostApiUrl: "https://${collate_server_domain}/api"
-  serverUrl: "wss://${collate_server_domain}"
+  authToken: "${collate_auth_token}"
+  serverHost: "${collate_server_domain}"
   secretsManager: "managed-azure-kv"
   ingestionPods:
   %{~ if ingestion != null ~} 
@@ -49,12 +48,27 @@ config:
       %{~ endif ~}
       automount: true
   argoWorkflows:
-    %{~ if argowf.provisioner == "helm" ~}
-    endpoint: "http://argo-workflows-${environment}-server.${argowf.namespace}.svc:2746"
-    %{~ else ~}
     %{~ if argowf.provisioner == "existing" ~}
     endpoint: ${argowf.endpoint}
     %{~ endif ~}
-    %{~ endif ~}
 serviceMonitor:
   enabled: ${service_monitor_enabled}
+%{ if argowf.provisioner == "helm" ~}
+installArgoWorkflows: true
+argoWorkflows:
+  controller:
+    workflowDefaults:
+      spec:
+        podMetadata:
+          labels:
+            azure.workload.identity/use: "true"
+%{ endif ~}
+ecrRegistryHelper:
+  %{~ if ecr_access_key != null ~}
+  collateCredentials:
+    values:
+      accessKeyId: "${ ecr_access_key }"
+      secretAccessKey: "${ ecr_secret_key }"
+  %{~ else ~}
+  enabled: false
+  %{~ endif ~}
