@@ -29,12 +29,12 @@ variable "location" {
 variable "release_version" {
   type        = string
   description = "The Hybrid Ingestion Runner version to deploy."
-  default     = "1.10.4"
+  default     = "1.10.3"
 }
 
 variable "namespace" {
   type        = string
-  default     = "collate-hybrid-ingestion-runner"
+  default     = "collate-runner"
   description = "The application's namespace prefix. Note that `var.environment` will be appended to this value."
 }
 
@@ -104,33 +104,17 @@ variable "key_vault_resource_group_name" {
   type        = string
   description = "The resource group name where the Azure Key Vault is located."
   default     = null
-  
 }
 
 variable "argowf" {
   description = "Argo Workflows configuration."
   type = object({
-    provisioner            = optional(string)
-    endpoint               = optional(string)
-    helm_chart_version     = optional(string)
-    namespace              = optional(string)
-    controller_sa_name     = optional(string)
-    server_sa_name         = optional(string)
-    storage_account_name   = optional(string)
-    storage_container_name = optional(string)
-    crd_enabled            = optional(bool)
-    db = optional(object({
-      apply_immediately     = optional(bool)
-      name                  = optional(string)
-      sku_name              = optional(string)
-      version               = optional(string)
-      administrator_login   = optional(string)
-      credentials_secret    = optional(string)
-      storage_mb            = optional(number)
-      backup_retention_days = optional(number)
-      auto_grow_enabled     = optional(bool)
-    }))
+    provisioner = optional(string)
+    endpoint    = optional(string)
   })
+  default = {
+    provisioner = "helm"
+  }
 }
 
 variable "ingestion" {
