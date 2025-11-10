@@ -17,18 +17,9 @@ resource "azurerm_federated_identity_credential" "ingestion" {
   audience            = ["api://AzureADTokenExchange"]
 }
 
-# Assign Azure Storage Blob Data Contributor role to the ingestion user-assigned identity
-resource "azurerm_role_assignment" "ingestion_storage_blob_data_contributor" {
-  scope                = azurerm_storage_account.argowf.id
-  role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = azurerm_user_assigned_identity.ingestion.principal_id
-  principal_type       = "ServicePrincipal"
-  depends_on           = [azurerm_user_assigned_identity.ingestion]
-}
-
 # Access to Azure Key Vault as Secrets Officer
 resource "azurerm_role_assignment" "ingestion_key_vault_secrets_officer" {
-  count = var.key_vault_name != null ? 0 : 1
+  count = var.key_vault_name != null ? 1 : 0
   scope                = data.azurerm_key_vault.key_vault[0].id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = azurerm_user_assigned_identity.ingestion.principal_id
