@@ -13,7 +13,7 @@
 Create a file named `terraform.tfvars` with the mandatory variables, you can use this as an example:
 
 ```hcl
-app_version = "1.10.6"
+app_version = "1.10.8"
 # Example for authentication using admin@mycompany.com
 initial_admins   = ["admin"] 
 principal_domain = "mycompany.com"
