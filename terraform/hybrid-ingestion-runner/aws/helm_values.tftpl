@@ -27,6 +27,9 @@ config:
   secretsManager: "managed-aws"
   ingestionPods:
   %{~ if ingestion != null ~}
+    %{~ if ingestion.ignore_version_validate ~}
+    disableVersionValidation: true
+    %{~ endif ~}
     %{~ if ingestion.image != null ~}
     %{~ if ingestion.image.repository != null ~}
     repository: "${ingestion.image.repository}"
