@@ -111,9 +111,10 @@ variable "ingestion" {
       tag          = optional(string) # Docker image tag
       pull_secrets = optional(string) # Docker image pull secret
     }))
-    extra_envs         = optional(string)       # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`
-    pod_annotations    = optional(map(string))  # Annotations for the pods
-    extra_policies_arn = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role
+    extra_envs              = optional(string)       # Extra environment variables for the pods, as `[key1:value1,key2:value2,...]`
+    pod_annotations         = optional(map(string))  # Annotations for the pods
+    extra_policies_arn      = optional(list(string)) # List of IAM policy ARNs to be attached to the ingestion pods' IAM role
+    ignore_version_validate = optional(bool)         # Whether to ignore version validation between the Helm chart and the Docker image
   })
   default = null
 }
