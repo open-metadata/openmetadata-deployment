@@ -1,18 +1,3 @@
-#locals {
-#  omd = {
-#    namespace          = var.app_namespace
-#    helm_chart_version = coalesce(var.app_helm_chart_version, var.app_version)
-#    docker_image_tag   = coalesce(var.docker_image_tag, "om-${var.app_version}-cl-${var.app_version}")
-#    server_sa_name     = "openmetadata-server"
-#  }
-#  className                   = "io.collate.pipeline.argo.ArgoServiceClient"
-#  apiEndpoint                 = "http://argowf-argo-workflows-server:2746"
-#  metadataApiEndpoint         = "http://openmetadata:8585/api"
-#  imagePullPolicy             = "IfNotPresent"
-#  argoServiceAccountTokenName = "om-argo-wf-sa.service-account-token"
-#}
-
-
 resource "helm_release" "caip" {
   count      = var.caip_enabled ? 1 : 0
   name       = "caip"
