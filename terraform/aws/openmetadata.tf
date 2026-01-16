@@ -45,7 +45,7 @@ resource "helm_release" "openmetadata" {
         image_pull_secrets            = ["omd-registry-credentials"]
         argowf_token                  = kubernetes_secret.om_role_token.metadata[0].name
         argowf_sa                     = kubernetes_service_account_v1.om_role.metadata[0].name
-	caip_enabled                  = var.caip_enabled
+        caip_enabled                  = var.caip_enabled
         caip_embedding_provider       = var.caip_embedding_provider
         caip_aws_bedrock_region       = var.caip_aws_bedrock_region
         caip_host                     = var.caip_host
