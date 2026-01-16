@@ -1,0 +1,136 @@
+config:
+  validation:
+    # Maximum number of characters accepted in a user message.
+%{ if try(tostring(caip_validation_max_user_message_chars), "") != "" ~}
+    maxUserMessageChars: ${caip_validation_max_user_message_chars}
+%{ endif ~}
+  # Large language model provider configuration.
+  llmProvider:
+    # Type identifier of the configured LLM provider (e.g., bedrock, openai, anthropic, google, ollama).
+%{ if caip_llm_type != "" ~}
+    type: "${caip_llm_type}"
+%{ endif ~}
+    # Provider-specific model identifier.
+%{ if caip_llm_model != "" ~}
+    model: "${caip_llm_model}"
+%{ endif ~}
+    # Maximum reasoning iterations before forcing termination.
+%{ if try(tostring(caip_llm_max_iteration), "") != "" ~}
+    maxIteration: ${caip_llm_max_iteration}
+%{ endif ~}
+    # Maximum iterations when using dynamic cutoffs.
+%{ if try(tostring(caip_llm_dynamic_max_iterations), "") != "" ~}
+    dynamicMaxIterations: ${caip_llm_dynamic_max_iterations}
+%{ endif ~}
+    # OpenAI-compatible provider options.
+    openAI:
+      # API key used when OpenAI is selected.
+%{ if caip_llm_open_ai_api_key != "" ~}
+      apiKey: "${caip_llm_open_ai_api_key}"
+%{ endif ~}
+      # Base URL for OpenAI API requests.
+%{ if caip_llm_open_ai_base_url != "" ~}
+      baseUrl: "${caip_llm_open_ai_base_url}"
+%{ endif ~}
+      # Path for chat completions endpoint.
+%{ if caip_llm_open_ai_chat_completions_path != "" ~}
+      chatCompletionsPath: "${caip_llm_open_ai_chat_completions_path}"
+%{ endif ~}
+      # Path for legacy completions/responses endpoint.
+%{ if caip_llm_open_ai_responses_api_path != "" ~}
+      responsesAPIPath: "${caip_llm_open_ai_responses_api_path}"
+%{ endif ~}
+      # Path for embeddings endpoint.
+%{ if caip_llm_open_ai_embeddings_path != "" ~}
+      embeddingsPath: "${caip_llm_open_ai_embeddings_path}"
+%{ endif ~}
+      # Path for content moderation endpoint.
+%{ if caip_llm_open_ai_moderations_path != "" ~}
+      moderationsPath: "${caip_llm_open_ai_moderations_path}"
+%{ endif ~}
+      # Azure OpenAI-specific settings.
+      azureOpenAI:
+        # When true, toggle Azure OpenAI integration logic.
+%{ if try(tostring(caip_llm_open_ai_azure_open_ai_enabled), "") != "" ~}
+        enabled: ${caip_llm_open_ai_azure_open_ai_enabled}
+%{ endif ~}
+        # Azure OpenAI API version string.
+%{ if caip_llm_open_ai_azure_open_ai_api_version != "" ~}
+        apiVersion: "${caip_llm_open_ai_azure_open_ai_api_version}"
+%{ endif ~}
+        # Azure deployment name that serves the model.
+%{ if caip_llm_open_ai_azure_open_ai_deployment_name != "" ~}
+        deploymentName: "${caip_llm_open_ai_azure_open_ai_deployment_name}"
+%{ endif ~}
+        # Azure resource group name hosting the deployment.
+%{ if caip_llm_open_ai_azure_open_ai_resource_name != "" ~}
+        resourceName: "${caip_llm_open_ai_azure_open_ai_resource_name}"
+%{ endif ~}
+    # Anthropic provider settings.
+    anthropic:
+      # API key used for Anthropic requests.
+%{ if caip_llm_anthropic_api_key != "" ~}
+      apiKey: "${caip_llm_anthropic_api_key}"
+%{ endif ~}
+      # Base URL for Anthropic API calls.
+%{ if caip_llm_anthropic_base_url != "" ~}
+      baseUrl: "${caip_llm_anthropic_base_url}"
+%{ endif ~}
+      # API version string for Anthropic requests.
+%{ if caip_llm_anthropic_api_version != "" ~}
+      apiVersion: "${caip_llm_anthropic_api_version}"
+%{ endif ~}
+    # Google Generative AI provider settings.
+    google:
+      # API key used for Google Generative AI.
+%{ if caip_llm_google_api_key != "" ~}
+      apiKey: "${caip_llm_google_api_key}"
+%{ endif ~}
+      # Base URL for Google Generative AI API calls.
+%{ if caip_llm_google_base_url != "" ~}
+      baseUrl: "${caip_llm_google_base_url}"
+%{ endif ~}
+    # Amazon Bedrock provider settings.
+    bedrock:
+      # AWS access key ID when using static credentials.
+%{ if caip_llm_bedrock_aws_access_key_id != "" ~}
+      awsAccessKeyId: "${caip_llm_bedrock_aws_access_key_id}"
+%{ endif ~}
+      # AWS secret access key matching the above ID.
+%{ if caip_llm_bedrock_aws_secret_access_key != "" ~}
+      awsSecretAccessKey: "${caip_llm_bedrock_aws_secret_access_key}"
+%{ endif ~}
+      # AWS region hosting the Bedrock endpoint.
+%{ if caip_llm_bedrock_aws_region != "" ~}
+      awsRegion: "${caip_llm_bedrock_aws_region}"
+%{ endif ~}
+      # Optional AWS session token for temporary credentials.
+%{ if caip_llm_bedrock_aws_session_token != "" ~}
+      awsSessionToken: "${caip_llm_bedrock_aws_session_token}"
+%{ endif ~}
+      # Service-specific base URL override for Bedrock.
+%{ if caip_llm_bedrock_base_url != "" ~}
+      baseUrl: "${caip_llm_bedrock_base_url}"
+%{ endif ~}
+      # Enables verbose logging for Bedrock requests when true.
+%{ if try(tostring(caip_llm_bedrock_enable_logging), "") != "" ~}
+      enableLogging: ${caip_llm_bedrock_enable_logging}
+%{ endif ~}
+      # Request timeout in milliseconds for Bedrock calls.
+%{ if try(tostring(caip_llm_bedrock_request_timeout_millis), "") != "" ~}
+      requestTimeoutMillis: ${caip_llm_bedrock_request_timeout_millis}
+%{ endif ~}
+      # Connection timeout in milliseconds for Bedrock calls.
+%{ if try(tostring(caip_llm_bedrock_connect_timeout_millis), "") != "" ~}
+      connectTimeoutMillis: ${caip_llm_bedrock_connect_timeout_millis}
+%{ endif ~}
+      # Socket timeout in milliseconds for Bedrock calls.
+%{ if try(tostring(caip_llm_bedrock_socket_timeout_millis), "") != "" ~}
+      socketTimeoutMillis: ${caip_llm_bedrock_socket_timeout_millis}
+%{ endif ~}
+    # Ollama provider settings.
+    ollama:
+      # Base URL of the Ollama server.
+%{ if caip_llm_ollama_base_url != "" ~}
+      baseUrl: "${caip_llm_ollama_base_url}"
+%{ endif ~}
