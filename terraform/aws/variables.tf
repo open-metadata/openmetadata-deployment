@@ -104,9 +104,9 @@ variable "caip_enabled" {
 variable "caip_embedding_provider" {
   type        = string
   description = "The embedding provider to use with Collate AI Proxy. Supported providers are 'bedrock', 'openai', 'anthropic', 'google', and 'ollama'."
-  default     = "bedrock"
+  default     = null
   validation {
-    condition     = contains(["bedrock", "openai", "anthropic", "google", "ollama"], var.caip_embedding_provider)
+    condition     = var.caip_embedding_provider == null || contains(["bedrock", "openai", "anthropic", "google", "ollama"], var.caip_embedding_provider)
     error_message = "Invalid embedding provider. Supported providers are 'bedrock', 'openai', 'anthropic', 'google', and 'ollama'."
   }
 }
@@ -114,13 +114,13 @@ variable "caip_embedding_provider" {
 variable "caip_aws_bedrock_region" {
   type        = string
   description = "The AWS region where Bedrock is available. Required if the embedding provider is set to 'bedrock'."
-  default     = ""
+  default     = null
 }
 
 variable "caip_host" {
   type        = string
   description = "The name of the Collate AI Proxy pod."
-  default     = "caip-collate-ai-proxy"
+  default     = null
 }
 
 
@@ -129,181 +129,175 @@ variable "caip_host" {
 variable "caip_validation_max_user_message_chars" {
   type        = number
   description = "Maximum characters accepted in a Collate AI Proxy user message."
-  default     = 8000
+  default     = null
 }
 
 variable "caip_llm_type" {
   type        = string
   description = "Identifier of the Collate AI Proxy LLM provider."
-  default     = "bedrock"
+  default     = null
 }
 
 variable "caip_llm_model" {
   type        = string
   description = "Model identifier used by the Collate AI Proxy LLM provider."
-  default     = "anthropic.claude-sonnet-4-5-20250929-v1:0"
+  default     = null
 }
 
 variable "caip_llm_max_iteration" {
   type        = number
   description = "Maximum reasoning iterations before Collate AI Proxy stops a request."
-  default     = 30
+  default     = null
 }
 
 variable "caip_llm_dynamic_max_iterations" {
   type        = number
   description = "Maximum dynamic reasoning iterations for the Collate AI Proxy."
-  default     = 50
+  default     = null
 }
 
-variable "caip_llm_open_ai_api_key" {
+variable "caip_open_ai_api_key" {
   type        = string
   description = "API key used when the Collate AI Proxy targets an OpenAI-compatible provider."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_open_ai_base_url" {
+variable "caip_open_ai_base_url" {
   type        = string
   description = "Base URL for OpenAI-compatible requests from the Collate AI Proxy."
-  default     = "https://api.openai.com"
+  default     = null
 }
 
-variable "caip_llm_open_ai_chat_completions_path" {
+variable "caip_open_ai_chat_completions_path" {
   type        = string
   description = "Path for chat completions when using OpenAI-compatible providers."
-  default     = "/v1/chat/completions"
+  default     = null
 }
 
-variable "caip_llm_open_ai_responses_api_path" {
+variable "caip_open_ai_responses_api_path" {
   type        = string
   description = "Path for legacy responses when using OpenAI-compatible providers."
-  default     = "/v1/responses"
+  default     = null
 }
 
-variable "caip_llm_open_ai_embeddings_path" {
+variable "caip_open_ai_embeddings_path" {
   type        = string
   description = "Path for embeddings when using OpenAI-compatible providers."
-  default     = "/v1/embeddings"
+  default     = null
 }
 
-variable "caip_llm_open_ai_moderations_path" {
+variable "caip_open_ai_moderations_path" {
   type        = string
   description = "Path for content moderation when using OpenAI-compatible providers."
-  default     = "/v1/moderations"
+  default     = null
 }
 
-variable "caip_llm_open_ai_azure_open_ai_enabled" {
+variable "caip_open_ai_azure_open_ai_enabled" {
   type        = bool
   description = "Enable Azure OpenAI specific logic for the Collate AI Proxy."
-  default     = false
+  default     = null
 }
 
-variable "caip_llm_open_ai_azure_open_ai_api_version" {
+variable "caip_open_ai_azure_open_ai_api_version" {
   type        = string
   description = "Azure OpenAI API version used by the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_open_ai_azure_open_ai_deployment_name" {
+variable "caip_open_ai_azure_open_ai_deployment_name" {
   type        = string
   description = "Azure OpenAI deployment name serving the Collate AI Proxy model."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_open_ai_azure_open_ai_resource_name" {
+variable "caip_open_ai_azure_open_ai_resource_name" {
   type        = string
   description = "Azure resource name hosting the Collate AI Proxy deployment."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_anthropic_api_key" {
+variable "caip_anthropic_api_key" {
   type        = string
   description = "API key used for Anthropic requests from the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_anthropic_base_url" {
+variable "caip_anthropic_base_url" {
   type        = string
   description = "Base URL for Anthropic API calls from the Collate AI Proxy."
-  default     = "https://api.anthropic.com"
+  default     = null
 }
 
-variable "caip_llm_anthropic_api_version" {
+variable "caip_anthropic_api_version" {
   type        = string
   description = "API version used for Anthropic requests in the Collate AI Proxy."
-  default     = "2023-06-01"
+  default     = null
 }
 
-variable "caip_llm_google_api_key" {
+variable "caip_google_api_key" {
   type        = string
   description = "API key used for Google Generative AI within the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_google_base_url" {
+variable "caip_google_base_url" {
   type        = string
   description = "Base URL for Google Generative AI calls from the Collate AI Proxy."
-  default     = "https://generativelanguage.googleapis.com"
+  default     = null
 }
 
-variable "caip_llm_bedrock_aws_access_key_id" {
+variable "caip_bedrock_aws_access_key_id" {
   type        = string
   description = "AWS access key ID for Bedrock requests issued by the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_bedrock_aws_secret_access_key" {
+variable "caip_bedrock_aws_secret_access_key" {
   type        = string
   description = "AWS secret access key for Bedrock requests issued by the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_bedrock_aws_region" {
-  type        = string
-  description = "AWS region hosting the Bedrock endpoint for the Collate AI Proxy."
-  default     = ""
-}
-
-variable "caip_llm_bedrock_aws_session_token" {
+variable "caip_bedrock_aws_session_token" {
   type        = string
   description = "AWS session token for temporary Bedrock credentials in the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_bedrock_base_url" {
+variable "caip_bedrock_base_url" {
   type        = string
   description = "Bedrock service base URL override for the Collate AI Proxy."
-  default     = ""
+  default     = null
 }
 
-variable "caip_llm_bedrock_enable_logging" {
+variable "caip_bedrock_enable_logging" {
   type        = bool
   description = "Enable verbose logging for Bedrock requests issued by the Collate AI Proxy."
-  default     = false
+  default     = null
 }
 
-variable "caip_llm_bedrock_request_timeout_millis" {
+variable "caip_bedrock_request_timeout_millis" {
   type        = number
   description = "Request timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = 900000
+  default     = null
 }
 
-variable "caip_llm_bedrock_connect_timeout_millis" {
+variable "caip_bedrock_connect_timeout_millis" {
   type        = number
   description = "Connection timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = 900000
+  default     = null
 }
 
-variable "caip_llm_bedrock_socket_timeout_millis" {
+variable "caip_bedrock_socket_timeout_millis" {
   type        = number
   description = "Socket timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = 900000
+  default     = null
 }
 
-variable "caip_llm_ollama_base_url" {
+variable "caip_ollama_base_url" {
   type        = string
   description = "Base URL of the Ollama server targeted by the Collate AI Proxy."
-  default     = "http://localhost:11434"
+  default     = null
 }
 
 
