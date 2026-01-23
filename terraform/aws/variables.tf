@@ -144,6 +144,12 @@ variable "caip_llm_model" {
   default     = null
 }
 
+variable "caip_llm_model_small" {
+  type        = string
+  description = "Provider-specific identifier for the smaller model variant."
+  default     = null
+}
+
 variable "caip_llm_max_iteration" {
   type        = number
   description = "Maximum reasoning iterations before Collate AI Proxy stops a request."

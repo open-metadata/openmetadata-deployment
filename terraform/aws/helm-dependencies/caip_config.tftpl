@@ -14,6 +14,10 @@ config:
 %{ if caip.llm_model != null ~}
     model: "${caip.llm_model}"
 %{ endif ~}
+    # Provider-specific identifier for the smaller model variant.
+%{ if caip.llm_model_small != null ~}
+    model: "${caip.llm_model_small}"
+%{ endif ~}
     # Maximum reasoning iterations before forcing termination.
 %{ if caip.llm_max_iteration != null ~}
     maxIteration: ${caip.llm_max_iteration}
