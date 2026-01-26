@@ -46,6 +46,20 @@ imagePullSecrets:
 %{ endfor ~}
 %{ endif ~}
 extraEnvs:
+%{ if caip_enabled ~}
+%{ if caip_embedding_provider != null ~}
+- name: EMBEDDING_PROVIDER
+  value: ${caip_embedding_provider}
+%{ endif ~}
+%{ if caip_host != null ~}
+- name: AI_PLATFORM_HOST
+  value: ${caip_host}
+%{ endif ~}
+%{ if caip_aws_bedrock_region != null ~}
+- name: AWS_BEDROCK_REGION
+  value: ${caip_aws_bedrock_region}
+%{ endif ~}
+%{ endif ~}
 - name: ARGO_NAMESPACE
   value: ${workflows_execution_namespace}
 - name: ARGO_TOKEN
