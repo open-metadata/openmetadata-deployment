@@ -3,6 +3,7 @@ locals {
     namespace          = var.app_namespace
     helm_chart_version = coalesce(var.app_helm_chart_version, var.app_version)
     docker_image_tag   = coalesce(var.docker_image_tag, "om-${var.app_version}-cl-${var.app_version}")
+    server_sa_name     = "openmetadata-server"
   }
   className                   = "io.collate.pipeline.argo.ArgoServiceClient"
   apiEndpoint                 = "http://argowf-argo-workflows-server:2746"
@@ -44,6 +45,10 @@ resource "helm_release" "openmetadata" {
         image_pull_secrets            = ["omd-registry-credentials"]
         argowf_token                  = kubernetes_secret.om_role_token.metadata[0].name
         argowf_sa                     = kubernetes_service_account_v1.om_role.metadata[0].name
+        caip_enabled                  = coalesce(var.caip_enabled, false)
+        caip_embedding_provider       = var.caip_embedding_provider
+        caip_aws_bedrock_region       = var.region
+        caip_host                     = var.caip_host
         db_host                       = module.db_omd.db_instance_address
         db_port                       = module.db_omd.db_instance_port
         db_user                       = module.db_omd.db_instance_username
