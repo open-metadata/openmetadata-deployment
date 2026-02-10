@@ -24,6 +24,7 @@ module "db_omd" {
 
   engine               = "postgres"
   family               = "postgres${var.db_major_version}"
+  engine_version       = var.db_major_version
   major_engine_version = var.db_major_version
   instance_class       = var.db_instance_class
 

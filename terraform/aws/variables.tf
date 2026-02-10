@@ -101,211 +101,11 @@ variable "caip_enabled" {
   default     = false
 }
 
-variable "caip_embedding_provider" {
-  type        = string
-  description = "The embedding provider to use with Collate AI Proxy. Supported providers are 'bedrock', 'openai', 'anthropic', 'google', and 'ollama'."
-  default     = null
-  validation {
-    condition     = var.caip_embedding_provider == null || contains(["bedrock", "openai", "anthropic", "google", "ollama"], var.caip_embedding_provider)
-    error_message = "Invalid embedding provider. Supported providers are 'bedrock', 'openai', 'anthropic', 'google', and 'ollama'."
-  }
+variable "caip_helm_values" {
+  type        = map(string)
+  description = "Additional Helm values to configure the Collate AI Proxy. This can be used to set provider-specific parameters that are not explicitly defined as variables in this module."
+  default     = {}
 }
-
-variable "caip_aws_bedrock_region" {
-  type        = string
-  description = "The AWS region where Bedrock is available. Required if the embedding provider is set to 'bedrock'."
-  default     = null
-}
-
-variable "caip_host" {
-  type        = string
-  description = "The name of the Collate AI Proxy pod."
-  default     = null
-}
-
-
-# Collate AI Proxy chart configuration
-
-variable "caip_validation_max_user_message_chars" {
-  type        = number
-  description = "Maximum characters accepted in a Collate AI Proxy user message."
-  default     = null
-}
-
-variable "caip_llm_type" {
-  type        = string
-  description = "Identifier of the Collate AI Proxy LLM provider."
-  default     = null
-}
-
-variable "caip_llm_model" {
-  type        = string
-  description = "Model identifier used by the Collate AI Proxy LLM provider."
-  default     = null
-}
-
-variable "caip_llm_model_small" {
-  type        = string
-  description = "Provider-specific identifier for the smaller model variant."
-  default     = null
-}
-
-variable "caip_llm_max_iteration" {
-  type        = number
-  description = "Maximum reasoning iterations before Collate AI Proxy stops a request."
-  default     = null
-}
-
-variable "caip_llm_dynamic_max_iterations" {
-  type        = number
-  description = "Maximum dynamic reasoning iterations for the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_open_ai_api_key" {
-  type        = string
-  description = "API key used when the Collate AI Proxy targets an OpenAI-compatible provider."
-  default     = null
-}
-
-variable "caip_open_ai_base_url" {
-  type        = string
-  description = "Base URL for OpenAI-compatible requests from the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_open_ai_chat_completions_path" {
-  type        = string
-  description = "Path for chat completions when using OpenAI-compatible providers."
-  default     = null
-}
-
-variable "caip_open_ai_responses_api_path" {
-  type        = string
-  description = "Path for legacy responses when using OpenAI-compatible providers."
-  default     = null
-}
-
-variable "caip_open_ai_embeddings_path" {
-  type        = string
-  description = "Path for embeddings when using OpenAI-compatible providers."
-  default     = null
-}
-
-variable "caip_open_ai_moderations_path" {
-  type        = string
-  description = "Path for content moderation when using OpenAI-compatible providers."
-  default     = null
-}
-
-variable "caip_open_ai_azure_open_ai_enabled" {
-  type        = bool
-  description = "Enable Azure OpenAI specific logic for the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_open_ai_azure_open_ai_api_version" {
-  type        = string
-  description = "Azure OpenAI API version used by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_open_ai_azure_open_ai_deployment_name" {
-  type        = string
-  description = "Azure OpenAI deployment name serving the Collate AI Proxy model."
-  default     = null
-}
-
-variable "caip_open_ai_azure_open_ai_resource_name" {
-  type        = string
-  description = "Azure resource name hosting the Collate AI Proxy deployment."
-  default     = null
-}
-
-variable "caip_anthropic_api_key" {
-  type        = string
-  description = "API key used for Anthropic requests from the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_anthropic_base_url" {
-  type        = string
-  description = "Base URL for Anthropic API calls from the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_anthropic_api_version" {
-  type        = string
-  description = "API version used for Anthropic requests in the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_google_api_key" {
-  type        = string
-  description = "API key used for Google Generative AI within the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_google_base_url" {
-  type        = string
-  description = "Base URL for Google Generative AI calls from the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_aws_access_key_id" {
-  type        = string
-  description = "AWS access key ID for Bedrock requests issued by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_aws_secret_access_key" {
-  type        = string
-  description = "AWS secret access key for Bedrock requests issued by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_aws_session_token" {
-  type        = string
-  description = "AWS session token for temporary Bedrock credentials in the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_base_url" {
-  type        = string
-  description = "Bedrock service base URL override for the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_enable_logging" {
-  type        = bool
-  description = "Enable verbose logging for Bedrock requests issued by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_request_timeout_millis" {
-  type        = number
-  description = "Request timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_connect_timeout_millis" {
-  type        = number
-  description = "Connection timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_bedrock_socket_timeout_millis" {
-  type        = number
-  description = "Socket timeout in milliseconds for Bedrock calls made by the Collate AI Proxy."
-  default     = null
-}
-
-variable "caip_ollama_base_url" {
-  type        = string
-  description = "Base URL of the Ollama server targeted by the Collate AI Proxy."
-  default     = null
-}
-
 
 # OpenMetadata database
 
@@ -329,12 +129,12 @@ variable "db_iops" {
 
 variable "db_major_version" {
   type        = string
-  description = "OpenMetadata database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive."
+  description = "OpenMetadata database major version. For PostgreSQL, must be a string representing a version between '12' and '17', inclusive."
   default     = "16"
 
   validation {
-    condition     = contains(["12", "13", "14", "15", "16"], var.db_major_version)
-    error_message = "Invalid PostgreSQL version. The version must be '12', '13', '14', '15', or '16'"
+    condition     = contains(["12", "13", "14", "15", "16", "17"], var.db_major_version)
+    error_message = "Invalid PostgreSQL version. The version must be '12', '13', '14', '15', '16' or '17'"
   }
 }
 
@@ -394,12 +194,12 @@ variable "argowf_db_iops" {
 
 variable "argowf_db_major_version" {
   type        = string
-  description = "Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive."
+  description = "Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '17', inclusive."
   default     = "16"
 
   validation {
-    condition     = contains(["12", "13", "14", "15", "16"], var.argowf_db_major_version)
-    error_message = "Invalid PostgreSQL version. The version must be '12', '13', '14', '15', or '16'"
+    condition     = contains(["12", "13", "14", "15", "16", "17"], var.argowf_db_major_version)
+    error_message = "Invalid PostgreSQL version. The version must be '12', '13', '14', '15', '16' or '17'"
   }
 }
 
