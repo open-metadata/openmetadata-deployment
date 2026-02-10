@@ -46,9 +46,9 @@ resource "helm_release" "openmetadata" {
         argowf_token                  = kubernetes_secret.om_role_token.metadata[0].name
         argowf_sa                     = kubernetes_service_account_v1.om_role.metadata[0].name
         caip_enabled                  = coalesce(var.caip_enabled, false)
-        caip_embedding_provider       = var.caip_embedding_provider
+        caip_embedding_provider       = try(var.caip_helm_values.config.llmProvider.type, null)
         caip_aws_bedrock_region       = var.region
-        caip_host                     = var.caip_host
+        caip_host                     = try(var.caip_helm_values.fullNameOverride, "caip-collate-ai-proxy")
         db_host                       = module.db_omd.db_instance_address
         db_port                       = module.db_omd.db_instance_port
         db_user                       = module.db_omd.db_instance_username

@@ -75,3 +75,8 @@ extraEnvs:
 - name: ARGO_IMAGE_PULL_SECRETS
   value: "${ join(",", image_pull_secrets) }"
 %{ endif ~}
+%{ if caip_enabled ~}
+collate:
+  aiProxy:
+    enabled: true
+%{ endif ~}

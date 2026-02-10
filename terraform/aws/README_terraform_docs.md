@@ -1,10 +1,11 @@
-<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 3.0 |
+| <a name="requirement_kubernetes"></a> [kubernetes](#requirement\_kubernetes) | ~> 2.0 |
 
 ## Providers
 
@@ -23,6 +24,7 @@
 | <a name="module_irsa_role_argowf_controller"></a> [irsa\_role\_argowf\_controller](#module\_irsa\_role\_argowf\_controller) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.22 |
 | <a name="module_irsa_role_argowf_jobs"></a> [irsa\_role\_argowf\_jobs](#module\_irsa\_role\_argowf\_jobs) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.22 |
 | <a name="module_irsa_role_argowf_server"></a> [irsa\_role\_argowf\_server](#module\_irsa\_role\_argowf\_server) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.22 |
+| <a name="module_irsa_role_server"></a> [irsa\_role\_server](#module\_irsa\_role\_server) | terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks | ~> 5.60 |
 | <a name="module_opensearch_sg"></a> [opensearch\_sg](#module\_opensearch\_sg) | terraform-aws-modules/security-group/aws | ~>5.2 |
 | <a name="module_rds_argo_workflows"></a> [rds\_argo\_workflows](#module\_rds\_argo\_workflows) | terraform-aws-modules/rds/aws | ~>6.10 |
 | <a name="module_s3_bucket"></a> [s3\_bucket](#module\_s3\_bucket) | terraform-aws-modules/s3-bucket/aws | ~>4.2 |
@@ -36,8 +38,10 @@
 | [aws_iam_policy.argowf_controller](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.argowf_jobs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.argowf_server](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
+| [aws_iam_policy.server](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_opensearch_domain.opensearch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/opensearch_domain) | resource |
 | [helm_release.argowf](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.caip](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.openmetadata](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [kubernetes_config_map.ecr_registry_helper_config](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/config_map) | resource |
 | [kubernetes_manifest.ecr_registry_helper_cronjob](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/resources/manifest) | resource |
@@ -66,6 +70,7 @@
 | [aws_iam_policy_document.argowf_jobs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.argowf_server](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.opensearch](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.server](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
@@ -79,15 +84,17 @@
 | <a name="input_argowf_db_instance_class"></a> [argowf\_db\_instance\_class](#input\_argowf\_db\_instance\_class) | Argo Workflows database instance type. | `string` | `"db.t4g.micro"` | no |
 | <a name="input_argowf_db_instance_name"></a> [argowf\_db\_instance\_name](#input\_argowf\_db\_instance\_name) | Name of the Argo Workflows database instance. | `string` | `"argowf"` | no |
 | <a name="input_argowf_db_iops"></a> [argowf\_db\_iops](#input\_argowf\_db\_iops) | The amount of provisioned IOPS for Argo Workflows database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
-| <a name="input_argowf_db_major_version"></a> [argowf\_db\_major\_version](#input\_argowf\_db\_major\_version) | Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive. | `string` | `"16"` | no |
+| <a name="input_argowf_db_major_version"></a> [argowf\_db\_major\_version](#input\_argowf\_db\_major\_version) | Argo Workflows database major version. For PostgreSQL, must be a string representing a version between '12' and '17', inclusive. | `string` | `"16"` | no |
 | <a name="input_argowf_db_storage"></a> [argowf\_db\_storage](#input\_argowf\_db\_storage) | Argo Workflows database storage size. | `string` | `50` | no |
 | <a name="input_argowf_db_storage_throughput"></a> [argowf\_db\_storage\_throughput](#input\_argowf\_db\_storage\_throughput) | Argo Workflows storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
 | <a name="input_argowf_db_storage_type"></a> [argowf\_db\_storage\_type](#input\_argowf\_db\_storage\_type) | Argo Workflows database storage type. | `string` | `"gp3"` | no |
 | <a name="input_argowf_helm_chart_version"></a> [argowf\_helm\_chart\_version](#input\_argowf\_helm\_chart\_version) | The version of the Argo Workflows Helm chart to deploy. | `string` | `"0.40.8"` | no |
+| <a name="input_caip_enabled"></a> [caip\_enabled](#input\_caip\_enabled) | Enable or disable the Collate AI Proxy feature. | `bool` | `false` | no |
+| <a name="input_caip_helm_values"></a> [caip\_helm\_values](#input\_caip\_helm\_values) | Additional Helm values to configure the Collate AI Proxy. This can be used to set provider-specific parameters that are not explicitly defined as variables in this module. | `map(string)` | `{}` | no |
 | <a name="input_db_instance_class"></a> [db\_instance\_class](#input\_db\_instance\_class) | OpenMetadata database instance type. | `string` | `"db.m7g.large"` | no |
 | <a name="input_db_instance_name"></a> [db\_instance\_name](#input\_db\_instance\_name) | Name of the OpenMetadata database instance. | `string` | `"openmetadata"` | no |
 | <a name="input_db_iops"></a> [db\_iops](#input\_db\_iops) | The amount of provisioned IOPS for OpenMetadata database. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
-| <a name="input_db_major_version"></a> [db\_major\_version](#input\_db\_major\_version) | OpenMetadata database major version. For PostgreSQL, must be a string representing a version between '12' and '16', inclusive. | `string` | `"16"` | no |
+| <a name="input_db_major_version"></a> [db\_major\_version](#input\_db\_major\_version) | OpenMetadata database major version. For PostgreSQL, must be a string representing a version between '12' and '17', inclusive. | `string` | `"16"` | no |
 | <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | List of parameters to use in the OpenMetadata database parameter group. | `list(map(string))` | `[]` | no |
 | <a name="input_db_storage"></a> [db\_storage](#input\_db\_storage) | OpenMetadata database storage size. | `string` | `100` | no |
 | <a name="input_db_storage_throughput"></a> [db\_storage\_throughput](#input\_db\_storage\_throughput) | OpenMetadata storage throughput value for the DB instance. Setting this implies a db\_storage\_type of 'io1' or `gp3`. | `number` | `null` | no |
@@ -111,4 +118,4 @@
 | Name | Description |
 |------|-------------|
 | <a name="output_access_openmetadata"></a> [access\_openmetadata](#output\_access\_openmetadata) | n/a |
-<!-- END_TF_DOCS -->
+| <a name="output_openmetadata_server_irsa_role_arn"></a> [openmetadata\_server\_irsa\_role\_arn](#output\_openmetadata\_server\_irsa\_role\_arn) | ARN of the IAM role associated with the OpenMetadata server service account. |
