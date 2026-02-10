@@ -19,7 +19,7 @@ resource "azurerm_federated_identity_credential" "ingestion" {
 
 # Access to Azure Key Vault as Secrets Officer
 resource "azurerm_role_assignment" "ingestion_key_vault_secrets_officer" {
-  count = var.key_vault_name != null ? 1 : 0
+  count                = var.key_vault_name != null ? 1 : 0
   scope                = data.azurerm_key_vault.key_vault[0].id
   role_definition_name = "Key Vault Secrets Officer"
   principal_id         = azurerm_user_assigned_identity.ingestion.principal_id

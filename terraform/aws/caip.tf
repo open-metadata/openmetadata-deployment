@@ -11,8 +11,7 @@ resource "helm_release" "caip" {
   name       = "caip"
   repository = "https://open-metadata.github.io/collate-ai-proxy-helm-chart"
   chart      = "collate-ai-proxy"
-  version    = "0.0.1"
-  #version    = local.omd.helm_chart_version
+  version    = local.omd.helm_chart_version
   namespace = kubernetes_namespace.app.id
   wait      = false
   set = [for key, value in merge(local.caip, var.caip_helm_values) :
@@ -21,11 +20,4 @@ resource "helm_release" "caip" {
       "value" = value
     }
   ]
-
-  #  set_list = [
-  #    {
-  #      name  = "imagePullSecrets"
-  #      value = [{ "name": "omd-registry-credentials"}]
-  #    }
-  #  ]
 }
