@@ -7,6 +7,6 @@ terraform {
 }
 
 provider "keycloak" {
-  client_id     = "admin-cli"
-  url           = var.keycloak_url
+  client_id = "admin-cli"
+  url       = var.keycloak_url
 }

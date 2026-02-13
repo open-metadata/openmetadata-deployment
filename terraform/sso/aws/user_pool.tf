@@ -1,6 +1,6 @@
 resource "aws_cognito_user_pool" "omd_user_pool" {
-  name = var.user_pool_name
-  alias_attributes  = var.user_pool_alias_attributes
+  name             = var.user_pool_name
+  alias_attributes = var.user_pool_alias_attributes
 
   account_recovery_setting {
     recovery_mechanism {
@@ -21,7 +21,7 @@ resource "aws_cognito_user_pool_domain" "omd_user_pool_domain" {
 }
 
 resource "aws_cognito_user_pool_client" "userpool_client" {
-  name                                 = var.user_pool_client_name
-  user_pool_id                         = aws_cognito_user_pool.omd_user_pool.id
-  callback_urls                        = var.client_callback_urls
+  name          = var.user_pool_client_name
+  user_pool_id  = aws_cognito_user_pool.omd_user_pool.id
+  callback_urls = var.client_callback_urls
 }
