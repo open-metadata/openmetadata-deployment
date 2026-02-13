@@ -40,6 +40,8 @@ resource "helm_release" "openmetadata" {
         ingestion_image_name          = var.ingestion_image_name
         initial_admins                = jsonencode(var.initial_admins)
         principal_domain              = var.principal_domain
+        server_sa_name                = local.omd.server_sa_name
+        server_sa_arn                 = module.irsa_role_server.iam_role_arn
         workflows_execution_namespace = local.omd.namespace
         image_pull_policy             = "Always"
         image_pull_secrets            = ["omd-registry-credentials"]

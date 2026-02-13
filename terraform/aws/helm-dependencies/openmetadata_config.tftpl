@@ -31,6 +31,10 @@ openmetadata:
           secretKey: ${db_secret_key}
       dbParams: "allowPublicKeyRetrieval=true&useSSL=true&serverTimezone=UTC"
 
+serviceAccount:
+  name: ${server_sa_name}
+  annotations:
+    eks.amazonaws.com/role-arn: ${server_sa_arn}
 image:
   repository: ${image_name}
 %{ if image_tag != "" ~}
