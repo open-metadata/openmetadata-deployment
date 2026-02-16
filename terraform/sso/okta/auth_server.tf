@@ -7,11 +7,11 @@ resource "okta_auth_server" "server_omd" {
 }
 
 resource "okta_auth_server_scope" "scope_omd_server" {
-  auth_server_id   = okta_auth_server.server_omd.id
-  name             = var.auth_server_scope_name
-  default          = true
-  depends_on       = [okta_auth_server.server_omd]
-  consent          = "IMPLICIT"
+  auth_server_id = okta_auth_server.server_omd.id
+  name           = var.auth_server_scope_name
+  default        = true
+  depends_on     = [okta_auth_server.server_omd]
+  consent        = "IMPLICIT"
 }
 
 resource "okta_auth_server_policy" "policy_omd_server" {

@@ -21,12 +21,12 @@ resource "kubernetes_namespace" "argo_workflows" {
 }
 
 resource "helm_release" "hybrid_runner" {
-  name             = "hybrid-ingestion-runner"
-  repository       = "https://open-metadata.github.io/hybrid-ingestion-runner-helm-chart"
-  chart            = "hybrid-ingestion-runner"
-  version          = var.release_version
-  namespace        = local.namespace
-  wait             = false
+  name       = "hybrid-ingestion-runner"
+  repository = "https://open-metadata.github.io/hybrid-ingestion-runner-helm-chart"
+  chart      = "hybrid-ingestion-runner"
+  version    = var.release_version
+  namespace  = local.namespace
+  wait       = false
   values = [
     templatefile("${path.module}/helm_values.tftpl", {
       environment              = var.environment
@@ -46,7 +46,7 @@ resource "helm_release" "hybrid_runner" {
     })
   ]
 
-  depends_on = [ 
+  depends_on = [
     kubernetes_namespace.hybrid_runner,
     kubernetes_namespace.argo_workflows
   ]
