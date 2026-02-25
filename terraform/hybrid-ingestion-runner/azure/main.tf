@@ -5,6 +5,12 @@ locals {
     provisioner = coalesce(try(var.argowf.provisioner, null), "helm")
     endpoint    = try(var.argowf.endpoint, null)
   }
+  hybrid_runner = {
+    "resources.requests.cpu"    = "500m"
+    "resources.requests.memory" = "500Mi"
+    "resources.limits.cpu"      = "1000m"
+    "resources.limits.memory"   = "1Gi"
+  }
 }
 
 resource "kubernetes_namespace" "hybrid_runner" {
@@ -45,6 +51,11 @@ resource "helm_release" "hybrid_runner" {
       ecr_secret_key           = var.ECR_SECRET_KEY
     })
   ]
+
+  set = [for key, value in coalesce(local.hybrid_runner, var.helm_values) : {
+    name  = key
+    value = value
+  }]
 
   depends_on = [
     kubernetes_namespace.hybrid_runner,

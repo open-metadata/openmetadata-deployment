@@ -130,3 +130,9 @@ variable "ingestion" {
   })
   default = null
 }
+
+variable "helm_values" {
+  type        = map(string)
+  description = "Additional Helm values to merge into the Hybrid Ingestion Runner release."
+  default     = {}
+}
