@@ -4,6 +4,12 @@ locals {
     provisioner = coalesce(try(var.argowf.provisioner, null), "helm")
     endpoint    = try(var.argowf.endpoint, null)
   }
+  hybrid_runner = {
+    "resources.requests.cpu"    = "500m"
+    "resources.requests.memory" = "500Mi"
+    "resources.limits.cpu"      = "1000m"
+    "resources.limits.memory"   = "1Gi"
+  }
 }
 
 resource "helm_release" "hybrid_runner" {
@@ -32,4 +38,8 @@ resource "helm_release" "hybrid_runner" {
       }
     )
   ]
+  set = [for key, value in coalesce(local.hybrid_runner, var.helm_values) : {
+    name  = key
+    value = value
+  }]
 }
