@@ -3,7 +3,7 @@ openmetadata:
     pipelineServiceClientConfig:
       type: "argoWorkflows"
       argoWorkflows:
-        apiEndpoint: http://argo-workflows-server.argowf.svc:2746
+        apiEndpoint: "http://argo-workflows-server.argowf.svc:2746"
         ingestionImage: ${ingestion_image_name}%{ if image_tag != "" }:${image_tag}%{ endif }
         namespace: ${workflows_execution_namespace}
         serviceAccountName: ${argowf_sa}
@@ -75,10 +75,6 @@ extraEnvs:
     secretKeyRef:
       name: ${argowf_token}
       key: "token"
-%{ if length(image_pull_secrets) > 0 ~}
-- name: ARGO_IMAGE_PULL_SECRETS
-  value: "${ join(",", image_pull_secrets) }"
-%{ endif ~}
 %{ if caip_enabled ~}
 collate:
   aiProxy:
