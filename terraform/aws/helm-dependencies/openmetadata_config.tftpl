@@ -1,11 +1,17 @@
 openmetadata:
   config:
     pipelineServiceClientConfig:
-      className: io.collate.pipeline.argo.ArgoServiceClient
-      apiEndpoint: http://argo-workflows-server.argowf.svc:2746
+      type: "argoWorkflows"
+      argoWorkflows:
+        apiEndpoint: "http://argo-workflows-server.argowf.svc:2746"
+        ingestionImage: ${ingestion_image_name}%{ if image_tag != "" }:${image_tag}%{ endif }
+        namespace: ${workflows_execution_namespace}
+        serviceAccountName: ${argowf_sa}
+        %{ if length(image_pull_secrets) > 0 ~}
+        imagePullSecrets: "${ join(",", image_pull_secrets) }"
+        %{ endif ~}
+
       metadataApiEndpoint: http://openmetadata.${namespace}.svc:8585/api
-      auth:
-        enabled: false
     authorizer:
       initialAdmins: ${initial_admins}
       principalDomain: ${principal_domain}
@@ -64,21 +70,11 @@ extraEnvs:
   value: ${caip_aws_bedrock_region}
 %{ endif ~}
 %{ endif ~}
-- name: ARGO_NAMESPACE
-  value: ${workflows_execution_namespace}
 - name: ARGO_TOKEN
   valueFrom:
     secretKeyRef:
       name: ${argowf_token}
       key: "token"
-- name: ARGO_INGESTION_IMAGE
-  value: ${ingestion_image_name}%{ if image_tag != "" }:${image_tag}%{ endif }
-- name: ARGO_WORKFLOW_EXECUTOR_SERVICE_ACCOUNT_NAME
-  value: ${argowf_sa}
-%{ if length(image_pull_secrets) > 0 ~}
-- name: ARGO_IMAGE_PULL_SECRETS
-  value: "${ join(",", image_pull_secrets) }"
-%{ endif ~}
 %{ if caip_enabled ~}
 collate:
   aiProxy:
