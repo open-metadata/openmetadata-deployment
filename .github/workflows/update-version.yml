@@ -55,7 +55,13 @@ jobs:
         env:
           NEW_VERSION: ${{ inputs.mode == 'commit-version-bump' && inputs.version || inputs.release_branch_name }}
         run: |
-          sed -i "s/$(cat .version)/${NEW_VERSION}/g" .version terraform/aws/README.md terraform/aws/README_terraform_docs.md terraform/aws/variables.tf terraform/hybrid-ingestion-runner/aws/variables.tf terraform/hybrid-ingestion-runner/azure/variables.tf
+          set -euo pipefail
+          OLD_RE=$(printf '%s' "$(cat .version)" | sed 's/\./\\./g')
+          echo "$NEW_VERSION" > .version
+          # Only exact quoted occurrences — a bare 's/$OLD/$NEW/g' mangles unrelated
+          # values when the old version is two-segment: 2.0 also matches '~> 2.0'
+          # provider pins and versions like 2.32.0.
+          sed -i "s/\"${OLD_RE}\"/\"${NEW_VERSION}\"/g" terraform/aws/README.md terraform/aws/README_terraform_docs.md terraform/aws/variables.tf terraform/hybrid-ingestion-runner/aws/variables.tf terraform/hybrid-ingestion-runner/azure/variables.tf
       - name: Commit version bump
         if: ${{ inputs.mode == 'commit-version-bump' }}
         env:
