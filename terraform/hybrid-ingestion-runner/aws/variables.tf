@@ -119,6 +119,17 @@ variable "ingestion" {
   default = null
 }
 
+variable "ingestion_custom_config" {
+  type        = string
+  description = "YAML content rendered as-is into the Helm value `config.ingestionPods.customConfig` (e.g. `containerParams`, `workflowParams`)."
+  default     = null
+
+  validation {
+    condition     = var.ingestion_custom_config == null || can(yamldecode(var.ingestion_custom_config))
+    error_message = "ingestion_custom_config must be valid YAML."
+  }
+}
+
 variable "helm_values" {
   type        = map(string)
   description = "Additional Helm values to merge into the Hybrid Ingestion Runner release."

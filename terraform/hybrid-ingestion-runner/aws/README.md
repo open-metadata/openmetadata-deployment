@@ -67,6 +67,26 @@ ingestion = {
 }
 ```
 
+### Custom configuration for the ingestion pods
+
+Use the variable `ingestion_custom_config` to pass YAML content that will be rendered into the Helm value `config.ingestionPods.customConfig`. For example:
+
+```hcl
+ingestion_custom_config = <<-EOT
+  enabled: true
+  containerParams:
+    env:
+      - name: CUSTOM_ENV
+        value: "custom_value"
+  workflowParams:
+    tolerations:
+      - effect: NoSchedule
+        key: dedicated
+        operator: Equal
+        value: ingestion
+EOT
+```
+
 ## Common errors
 
 ### Error: Failed to query available provider packages and Inconsistent dependency lock file
