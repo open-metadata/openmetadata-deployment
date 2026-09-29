@@ -56,6 +56,10 @@ config:
       %{~ endif ~}
       %{~ endif ~}
       automount: true
+    %{~ if ingestion_custom_config != null ~}
+    customConfig:
+      ${indent(6, chomp(yamlencode(yamldecode(ingestion_custom_config))))}
+    %{~ endif ~}
   argoWorkflows:
     %{~ if argowf.provisioner == "existing" ~}
     endpoint: ${argowf.endpoint}

@@ -31,6 +31,7 @@ resource "helm_release" "hybrid_runner" {
         collate_server_domain    = var.collate_server_domain
         service_monitor_enabled  = var.service_monitor_enabled
         ingestion                = var.ingestion
+        ingestion_custom_config  = var.ingestion_custom_config
         ingestion_role_arn       = module.ingestion_pods_irsa.iam_role_arn
         argowf                   = local.argowf
         ecr_access_key           = var.ECR_ACCESS_KEY
